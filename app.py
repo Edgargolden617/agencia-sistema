@@ -138,10 +138,25 @@ def fecha_corta(valor):
 # =========================
 # CONEXIÓN BD
 # =========================
+import os
+import psycopg2
+import psycopg2.extras
+
 def get_db():
-    conn = sqlite3.connect("agencia.db")
-    conn.row_factory = sqlite3.Row
-    return conn
+
+    DATABASE_URL = os.environ.get("DATABASE_URL")
+
+    if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+    if DATABASE_URL:
+        conn = psycopg2.connect(DATABASE_URL)
+        return conn
+
+    else:
+        conn = sqlite3.connect("agencia.db")
+        conn.row_factory = sqlite3.Row
+        return conn
 
 # =========================
 # LOGIN
@@ -189,9 +204,7 @@ def nueva_reservacion():
         try:
             
 
-            conn = sqlite3.connect("agencia.db", timeout=30, isolation_level=None)
-            conn.execute("PRAGMA journal_mode=WAL;")
-            conn.row_factory = sqlite3.Row
+            conn = get_db()
             cursor = conn.cursor()
 
             # ================= DATOS CLIENTE =================
@@ -386,7 +399,7 @@ def gestionar_reservas():
     if "usuario" not in session:
         return redirect(url_for("login"))
 
-    conn = sqlite3.connect("agencia.db")
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -874,7 +887,7 @@ def contabilidad_reservacion(reservacion_id):
     if "usuario" not in session:
         return redirect(url_for("login"))
 
-    conn = sqlite3.connect("agencia.db")
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -986,7 +999,7 @@ def recibo_pago(pago_id):
     if "usuario" not in session:
         return redirect(url_for("login"))
 
-    conn = sqlite3.connect("agencia.db")
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -1088,7 +1101,7 @@ def recibo_pago(pago_id):
 @app.route("/pagos_reservacion/<int:reservacion_id>")
 def pagos_reservacion(reservacion_id):
 
-    conn = sqlite3.connect("agencia.db")
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -1125,7 +1138,7 @@ from io import BytesIO
 
 @app.route("/voucher/<int:reservacion_id>")
 def generar_voucher(reservacion_id):
-    conn = sqlite3.connect("agencia.db")
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -1199,7 +1212,7 @@ def reporte_contabilidad_general():
     proveedor_buscar = request.args.get("proveedor", "").strip()
     reservacion_buscar = request.args.get("reservacion", "").strip()
 
-    conn = sqlite3.connect("agencia.db")
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -1371,7 +1384,7 @@ def reporte_corte_fechas():
     fecha_fin = request.form.get('fecha_fin')
     orden = request.form.get('orden', 'fecha')  # por defecto orden por fecha
 
-    conn = sqlite3.connect('agencia.db')
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -1417,7 +1430,7 @@ def reporte_corte_fechas():
 @app.route("/verificar_voucher/<int:reservacion_id>")
 def verificar_voucher(reservacion_id):
 
-    conn = sqlite3.connect("agencia.db")
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -1780,7 +1793,7 @@ def vista_clientes():
     cliente_id = request.form.get('cliente_id')
     nombre = request.form.get('nombre')
 
-    conn = sqlite3.connect("agencia.db")
+    conn = get_db()
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 

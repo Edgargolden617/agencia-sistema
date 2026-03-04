@@ -3,3 +3,4 @@ gunicorn==21.2.0
 xhtml2pdf==0.2.11
 reportlab==3.6.13
 num2words==0.5.13
+psycopg2-binary
