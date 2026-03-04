@@ -216,7 +216,7 @@ def nueva_reservacion():
             referencia = request.form.get("referencia")
 
             cursor.execute("""
-                SELECT id FROM clientes WHERE nombre = ? AND apellidos = ?
+                SELECT id FROM clientes WHERE nombre = %s AND apellidos = %s
             """, (nombre, apellidos))
             cliente = cursor.fetchone()
 
@@ -225,7 +225,7 @@ def nueva_reservacion():
             else:
                 cursor.execute("""
                     INSERT INTO clientes (nombre, apellidos, celular, email, referencia)
-                    VALUES (?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s)
                 """, (nombre, apellidos, celular, email, referencia))
                 cliente_id = cursor.lastrowid
 
@@ -250,7 +250,7 @@ def nueva_reservacion():
                     cliente_id, tipo_reservacion, proveedor,
                     costo_cliente, costo_proveedor, utilidad,
                     estatus, fecha_creacion, producto_reservado
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (
                 cliente_id, tipo_reservacion, proveedor,
                 costo_cliente, costo_proveedor, utilidad,
@@ -278,7 +278,7 @@ def nueva_reservacion():
                         fecha_entrada, fecha_salida, plan,
                         tiempo_limite, observaciones,
                         clave_proveedor, clave_hotel
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
                     reservacion_id, hotel, ciudad,
                     fecha_entrada, fecha_salida, plan,
@@ -302,7 +302,7 @@ def nueva_reservacion():
                             adultos,
                             menores,
                             edades
-                        ) VALUES (?, ?, ?, ?, ?)
+                        ) VALUES (%s, %s, %s, %s, %s)
                     """, (
                         reservacion_id,
                         i,
@@ -343,7 +343,7 @@ def nueva_reservacion():
                         tiene_escala, ciudad_escala, hora_salida_escala, destino_escala,
                         hora_llegada_escala, tiempo_limite, clave_proveedor,
                         clave_aerolinea, observaciones
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
                 """, (
                     reservacion_id, aerolinea, vuelo, tipo_vuelo, fecha_regreso,
                     hora_regreso, hora_llegada_regreso, origen, destino, fecha_salida, hora_salida, hora_llegada,
@@ -363,7 +363,7 @@ def nueva_reservacion():
                     cursor.execute("""
                         INSERT INTO pasajeros_avion (
                             reservacion_id, nombre, apellidos, fecha_nacimiento
-                        ) VALUES (?, ?, ?, ?)
+                        ) VALUES (%s, %s, %s, %s)
                     """, (
                         reservacion_id, nombre, apellidos, fecha_nacimiento
                     ))
@@ -416,19 +416,19 @@ def gestionar_reservas():
     params = []
 
     if id_reserva:
-        where.append("r.id = ?")
+        where.append("r.id = %s")
         params.append(id_reserva)
 
     if id_cliente.isdigit():
-        where.append("c.id = ?")
+        where.append("c.id = %s")
         params.append(int(id_cliente))
 
     if nombre:
-        where.append("(c.nombre LIKE ? OR c.apellidos LIKE ?)")
+        where.append("(c.nombre LIKE %s OR c.apellidos LIKE %s)")
         params.extend([f"%{nombre}%", f"%{nombre}%"])
 
     if fecha:
-        where.append("DATE(r.fecha_creacion) = ?")
+        where.append("DATE(r.fecha_creacion) = %s")
         params.append(fecha)
 
     where_sql = ""
@@ -670,7 +670,7 @@ def detalle_reservacion(reservacion_id):
         JOIN clientes c ON r.cliente_id = c.id
         LEFT JOIN reservacion_hotel h ON r.id = h.reservacion_id
         LEFT JOIN reservacion_avion a ON r.id = a.reservacion_id
-        WHERE r.id = ?
+        WHERE r.id = %s
     """, (reservacion_id,))
 
     r = cursor.fetchone()
@@ -697,7 +697,7 @@ def detalle_reservacion(reservacion_id):
     cursor.execute("""
         SELECT *
         FROM vista_estado_financiero_reserva
-        WHERE reservacion_id = ?
+        WHERE reservacion_id = %s
     """, (reservacion_id,))
     estado = cursor.fetchone()
 
@@ -718,7 +718,7 @@ def detalle_reservacion(reservacion_id):
     cursor.execute("""
         SELECT habitacion_num, adultos, menores, edades
         FROM habitaciones
-        WHERE reservacion_id = ?
+        WHERE reservacion_id = %s
         ORDER BY habitacion_num
     """, (reservacion_id,))
     habitaciones = cursor.fetchall()
@@ -727,7 +727,7 @@ def detalle_reservacion(reservacion_id):
     cursor.execute("""
     SELECT nombre, apellidos, fecha_nacimiento
     FROM pasajeros_avion
-    WHERE reservacion_id = ?
+    WHERE reservacion_id = %s
     ORDER BY id
     """, (reservacion_id,))
     pasajeros = cursor.fetchall()
@@ -736,7 +736,7 @@ def detalle_reservacion(reservacion_id):
     cursor.execute("""
         SELECT id, tipo_pago, forma_pago, monto, observacion,concepto, fecha, recibo_id
         FROM pagos
-        WHERE reservacion_id = ?
+        WHERE reservacion_id = %s
         ORDER BY fecha 
     """, (reservacion_id,))
     pagos = cursor.fetchall()
@@ -801,7 +801,7 @@ def detalle_reservacion_modal(reservacion_id):
             c.email
         FROM reservaciones r
         JOIN clientes c ON r.cliente_id = c.id
-        WHERE r.id = ?
+        WHERE r.id = %s
     """, (reservacion_id,))
 
     r = cursor.fetchone()
@@ -817,7 +817,7 @@ def detalle_reservacion_modal(reservacion_id):
             observacion,
             recibo_id
         FROM pagos
-        WHERE reservacion_id = ?
+        WHERE reservacion_id = %s
         ORDER BY fecha
     """, (reservacion_id,))
 
@@ -842,7 +842,7 @@ def estado_financiero_reservacion(reservacion_id):
     cursor = conn.cursor()
 
     # Datos actuales de la reservación
-    cursor.execute("SELECT * FROM reservaciones WHERE id = ?", (reservacion_id,))
+    cursor.execute("SELECT * FROM reservaciones WHERE id = %s", (reservacion_id,))
     r = cursor.fetchone()
 
     if not r:
@@ -855,7 +855,7 @@ def estado_financiero_reservacion(reservacion_id):
             COALESCE(SUM(CASE WHEN tipo_pago = 'agencia_proveedor' THEN monto END), 0) AS pagado_proveedor,
             COALESCE(SUM(CASE WHEN tipo_pago = 'proveedor_agencia' THEN monto END), 0) AS devuelto_proveedor,
             COALESCE(SUM(CASE WHEN tipo_pago = 'agencia_cliente' THEN monto END), 0) AS devuelto_cliente
-        FROM pagos WHERE reservacion_id = ?
+        FROM pagos WHERE reservacion_id = %s
     """, (reservacion_id,))
     pagos = cursor.fetchone()
 
@@ -896,7 +896,7 @@ def contabilidad_reservacion(reservacion_id):
     cursor.execute("""
         SELECT *
         FROM vista_estado_financiero_reserva
-        WHERE reservacion_id = ?
+        WHERE reservacion_id = %s
     """, (reservacion_id,))
     estado = cursor.fetchone()
 
@@ -923,7 +923,7 @@ def contabilidad_reservacion(reservacion_id):
             p.observacion,
             p.recibo_id
         FROM pagos p
-        WHERE p.reservacion_id = ?
+        WHERE p.reservacion_id = %s
         ORDER BY p.fecha
     """, (reservacion_id,))
 
@@ -978,7 +978,7 @@ def registrar_pago(reservacion_id):
             observacion,
             fecha,
             recibo_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """, (
         reservacion_id,
         tipo_pago,
@@ -1011,7 +1011,7 @@ def recibo_pago(pago_id):
         FROM pagos p
         JOIN reservaciones r ON p.reservacion_id = r.id
         JOIN clientes c ON r.cliente_id = c.id
-        WHERE p.id = ?
+        WHERE p.id = %s
     """, (pago_id,))
     pago = cursor.fetchone()
     conn.close()
@@ -1117,7 +1117,7 @@ def pagos_reservacion(reservacion_id):
             p.concepto,
             p.observacion
         FROM pagos p
-        WHERE p.reservacion_id = ?
+        WHERE p.reservacion_id = %s
         ORDER BY p.fecha
     """, (reservacion_id,))
 
@@ -1165,7 +1165,7 @@ def generar_voucher(reservacion_id):
     LEFT JOIN clientes c ON r.cliente_id = c.id
     LEFT JOIN reservacion_hotel rh ON rh.reservacion_id = r.id
     LEFT JOIN reservacion_avion ra ON ra.reservacion_id = r.id
-    WHERE r.id = ?
+    WHERE r.id = %s
 """, (reservacion_id,))
     r = cursor.fetchone()
 
@@ -1173,11 +1173,11 @@ def generar_voucher(reservacion_id):
     # Obtener habitaciones si es tipo hotel
     habitaciones = []
     if r['tipo_reservacion'] == 'hotel':
-        cursor.execute("SELECT * FROM habitaciones WHERE reservacion_id = ?", (reservacion_id,))
+        cursor.execute("SELECT * FROM habitaciones WHERE reservacion_id = %s", (reservacion_id,))
         habitaciones = cursor.fetchall()
     pasajeros = []
     if r['tipo_reservacion'] == 'avion':
-        cursor.execute("SELECT * FROM pasajeros_avion WHERE reservacion_id = ?", (reservacion_id,))
+        cursor.execute("SELECT * FROM pasajeros_avion WHERE reservacion_id = %s", (reservacion_id,))
         pasajeros = cursor.fetchall()
     conn.close()
 
@@ -1223,7 +1223,7 @@ def reporte_contabilidad_general():
 
     # ---- FILTRO FECHAS ----
     if fecha_inicio and fecha_fin:
-        where.append("date(r.fecha_creacion) BETWEEN ? AND ?")
+        where.append("date(r.fecha_creacion) BETWEEN %s AND %s")
         params.extend([fecha_inicio, fecha_fin])
 
     # ---- FILTRO CLIENTE ----
@@ -1233,12 +1233,12 @@ def reporte_contabilidad_general():
 
         for palabra in palabras:
 
-            where.append("(c.nombre LIKE ? OR c.apellidos LIKE ?)")
+            where.append("(c.nombre LIKE %s OR c.apellidos LIKE %s)")
             params.extend([f"%{palabra}%", f"%{palabra}%"])
 
     # ---- FILTRO PROVEEDOR ----
     if proveedor_buscar:
-        where.append("r.proveedor LIKE ?")
+        where.append("r.proveedor LIKE %s")
         params.append(f"%{proveedor_buscar}%")
 
     # ---- FILTRO RESERVACIÓN (GT123 o 123) ✅ ----
@@ -1246,7 +1246,7 @@ def reporte_contabilidad_general():
         reservacion_buscar = reservacion_buscar.upper().replace("GT", "").strip()
 
         if reservacion_buscar.isdigit():
-            where.append("r.id = ?")
+            where.append("r.id = %s")
             params.append(int(reservacion_buscar))
 
     where_sql = ""
@@ -1313,7 +1313,7 @@ def reporte_contabilidad_general():
                 p.fecha_limite,
                 p.observacion
             FROM pagos p
-            WHERE p.reservacion_id = ?
+            WHERE p.reservacion_id = %s
             ORDER BY p.fecha ASC
         """, (f["reservacion_id"],))
 
@@ -1401,7 +1401,7 @@ def reporte_corte_fechas():
     """
 
     if fecha_inicio and fecha_fin:
-        query = query_base + " WHERE date(p.fecha) BETWEEN ? AND ? ORDER BY p.fecha ASC"
+        query = query_base + " WHERE date(p.fecha) BETWEEN %s AND %s ORDER BY p.fecha ASC"
         pagos = cursor.execute(query, (fecha_inicio, fecha_fin)).fetchall()
     else:
         query = query_base + " ORDER BY p.fecha DESC"
@@ -1444,7 +1444,7 @@ def verificar_voucher(reservacion_id):
                r.costo_cliente
         FROM reservaciones r
         JOIN clientes c ON r.cliente_id = c.id
-        WHERE r.id = ?
+        WHERE r.id = %s
     """, (reservacion_id,))
 
     r = cursor.fetchone()
@@ -1490,19 +1490,19 @@ def reporte_movimiento():
     forma_pago = request.args.get("forma_pago")
 
     if fecha_inicio:
-        filtros.append("fecha >= ?")
+        filtros.append("fecha >= %s")
         params.append(fecha_inicio)
     if fecha_fin:
-        filtros.append("fecha <= ?")
+        filtros.append("fecha <= %s")
         params.append(fecha_fin)
     if recibo:
-        filtros.append("recibo LIKE ?")
+        filtros.append("recibo LIKE %s")
         params.append(f"%{recibo}%")
     if tipo_pago:
-        filtros.append("tipo_pago = ?")
+        filtros.append("tipo_pago = %s")
         params.append(tipo_pago)
     if forma_pago:
-        filtros.append("forma_pago LIKE ?")
+        filtros.append("forma_pago LIKE %s")
         params.append(f"%{forma_pago}%")
 
     if filtros:
@@ -1549,7 +1549,7 @@ def cancelar_reservacion(reservacion_id):
             COALESCE(SUM(CASE WHEN tipo_pago = 'agencia_proveedor' THEN monto END), 0),
             COALESCE(SUM(CASE WHEN tipo_pago = 'proveedor_agencia' THEN monto END), 0),
             COALESCE(SUM(CASE WHEN tipo_pago = 'agencia_cliente' THEN monto END), 0)
-        FROM pagos WHERE reservacion_id = ?
+        FROM pagos WHERE reservacion_id = %s
     """, (reservacion_id,))
     pagado_cliente, pagado_proveedor, devuelto_proveedor, devuelto_cliente = cursor.fetchone()
 
@@ -1566,7 +1566,7 @@ def cancelar_reservacion(reservacion_id):
             if monto_devuelto > 0:
                 cursor.execute("""
                     INSERT INTO pagos (reservacion_id, tipo_pago, monto, forma_pago, fecha, observacion, concepto, recibo_id)
-                    VALUES (?, 'proveedor_agencia', ?, 'Transferencia', ?, ?, 'Devolución Proveedor', ?)
+                    VALUES (%s, 'proveedor_agencia', %s, 'Transferencia', %s, %s, 'Devolución Proveedor', %s)
                 """, (reservacion_id, monto_devuelto, ahora, comentarios, recibo_id))
                 recibo_id += 1
         else:
@@ -1581,7 +1581,7 @@ def cancelar_reservacion(reservacion_id):
         if diferencia > 0:
             cursor.execute("""
                 INSERT INTO pagos (reservacion_id, tipo_pago, monto, forma_pago, fecha, observacion, concepto, recibo_id)
-                VALUES (?, 'cliente_agencia', ?, 'Efectivo', ?, ?, 'Penalidad Cliente', ?)
+                VALUES (%s, 'cliente_agencia', %s, 'Efectivo', %s, %s, 'Penalidad Cliente', %s)
             """, (reservacion_id, diferencia, ahora, comentarios, recibo_id))
             recibo_id += 1
 
@@ -1595,14 +1595,14 @@ def cancelar_reservacion(reservacion_id):
     if tipo_devolucion == "devolucion" and devolucion > 0:
         cursor.execute("""
             INSERT INTO pagos (reservacion_id, tipo_pago, monto, forma_pago, fecha, observacion, concepto, recibo_id)
-            VALUES (?, 'agencia_cliente', ?, 'Transferencia', ?, ?, 'Devolución Cliente', ?)
+            VALUES (%s, 'agencia_cliente', %s, 'Transferencia', %s, %s, 'Devolución Cliente', %s)
         """, (reservacion_id, devolucion, ahora, comentarios, recibo_id))
-        cursor.execute("UPDATE reservaciones SET devolucion_cliente = ?, saldo_a_favor = 0 WHERE id = ?",
+        cursor.execute("UPDATE reservaciones SET devolucion_cliente = %s, saldo_a_favor = 0 WHERE id = %s",
                        (devolucion, reservacion_id))
         recibo_id += 1
 
     elif tipo_devolucion == "saldo_favor" and devolucion > 0:
-        cursor.execute("UPDATE reservaciones SET saldo_a_favor = ?, devolucion_cliente = 0 WHERE id = ?",
+        cursor.execute("UPDATE reservaciones SET saldo_a_favor = %s, devolucion_cliente = 0 WHERE id = %s",
                        (devolucion, reservacion_id))
 
     # === RECALCULAR PAGOS FINALES ===
@@ -1612,7 +1612,7 @@ def cancelar_reservacion(reservacion_id):
             COALESCE(SUM(CASE WHEN tipo_pago = 'agencia_cliente' THEN monto END), 0),
             COALESCE(SUM(CASE WHEN tipo_pago = 'agencia_proveedor' THEN monto END), 0),
             COALESCE(SUM(CASE WHEN tipo_pago = 'proveedor_agencia' THEN monto END), 0)
-        FROM pagos WHERE reservacion_id = ?
+        FROM pagos WHERE reservacion_id = %s
     """, (reservacion_id,))
     pagado_cliente, devuelto_cliente, pagado_proveedor, devuelto_proveedor = cursor.fetchone()
 
@@ -1628,14 +1628,14 @@ def cancelar_reservacion(reservacion_id):
     cursor.execute("""
         UPDATE reservaciones
         SET
-            costo_cliente = ?,
-            costo_proveedor = ?,
-            utilidad = ?,
-            saldo_a_favor = ?,
-            penalidad_proveedor = ?,
-            penalidad_agencia = ?,
-            estatus = ?
-        WHERE id = ?
+            costo_cliente = %s,
+            costo_proveedor = %s,
+            utilidad = %s,
+            saldo_a_favor = %s,
+            penalidad_proveedor = %s,
+            penalidad_agencia = %s,
+            estatus = %s
+        WHERE id = %s
     """, (
         nuevo_costo_cliente,
         nuevo_costo_proveedor,
@@ -1670,8 +1670,8 @@ def editar_reservacion(reservacion_id):
 
         cursor.execute("""
             UPDATE reservaciones
-            SET proveedor = ?, costo_cliente = ?, costo_proveedor = ?
-            WHERE id = ?
+            SET proveedor = %s, costo_cliente = %s, costo_proveedor = %s
+            WHERE id = %s
         """, (proveedor, costo_cliente, costo_proveedor, reservacion_id))
 
         # =========================
@@ -1688,7 +1688,7 @@ def editar_reservacion(reservacion_id):
             observaciones = request.form.get("observaciones")
 
             cursor.execute(
-                "SELECT 1 FROM reservacion_hotel WHERE reservacion_id = ?",
+                "SELECT 1 FROM reservacion_hotel WHERE reservacion_id = %s",
                 (reservacion_id,)
             )
             existe_hotel = cursor.fetchone()
@@ -1696,9 +1696,9 @@ def editar_reservacion(reservacion_id):
             if existe_hotel:
                 cursor.execute("""
                     UPDATE reservacion_hotel
-                    SET fecha_entrada = ?, fecha_salida = ?, menores = ?, plan = ?,
-                        tiempo_limite = ?, clave_proveedor = ?, observaciones = ?
-                    WHERE reservacion_id = ?
+                    SET fecha_entrada = %s, fecha_salida = %s, menores = %s, plan = %s,
+                        tiempo_limite = %s, clave_proveedor = %s, observaciones = %s
+                    WHERE reservacion_id = %s
                 """, (
                     fecha_entrada, fecha_salida, menores, plan,
                     tiempo_limite, clave_proveedor, observaciones,
@@ -1709,7 +1709,7 @@ def editar_reservacion(reservacion_id):
                     INSERT INTO reservacion_hotel
                     (reservacion_id, fecha_entrada, fecha_salida, menores, plan,
                      tiempo_limite, clave_proveedor, observaciones)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
                     reservacion_id, fecha_entrada, fecha_salida, menores, plan,
                     tiempo_limite, clave_proveedor, observaciones
@@ -1729,7 +1729,7 @@ def editar_reservacion(reservacion_id):
             tiempo_limite_avion = request.form.get("tiempo_limite")
 
             cursor.execute(
-                "SELECT 1 FROM reservacion_avion WHERE reservacion_id = ?",
+                "SELECT 1 FROM reservacion_avion WHERE reservacion_id = %s",
                 (reservacion_id,)
             )
             existe_avion = cursor.fetchone()
@@ -1737,9 +1737,9 @@ def editar_reservacion(reservacion_id):
             if existe_avion:
                 cursor.execute("""
                     UPDATE reservacion_avion
-                    SET origen = ?, destino = ?, vuelo = ?, fecha_salida = ?,
-                        hora_salida = ?, hora_llegada = ?, tiempo_limite = ?
-                    WHERE reservacion_id = ?
+                    SET origen = %s, destino = %s, vuelo = %s, fecha_salida = %s,
+                        hora_salida = %s, hora_llegada = %s, tiempo_limite = %s
+                    WHERE reservacion_id = %s
                 """, (
                     origen, destino, vuelo, fecha_salida_avion,
                     hora_salida, hora_llegada, tiempo_limite_avion,
@@ -1750,7 +1750,7 @@ def editar_reservacion(reservacion_id):
                     INSERT INTO reservacion_avion
                     (reservacion_id, origen, destino, vuelo, fecha_salida,
                      hora_salida, hora_llegada, tiempo_limite)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
                     reservacion_id, origen, destino, vuelo,
                     fecha_salida_avion, hora_salida,
@@ -1765,17 +1765,17 @@ def editar_reservacion(reservacion_id):
     # =========================
     # MODO GET (CARGAR DATOS)
     # =========================
-    cursor.execute("SELECT * FROM reservaciones WHERE id = ?", (reservacion_id,))
+    cursor.execute("SELECT * FROM reservaciones WHERE id = %s", (reservacion_id,))
     r = cursor.fetchone()
 
     cursor.execute(
-        "SELECT * FROM reservacion_hotel WHERE reservacion_id = ?",
+        "SELECT * FROM reservacion_hotel WHERE reservacion_id = %s",
         (reservacion_id,)
     )
     hotel = cursor.fetchone()
 
     cursor.execute(
-        "SELECT * FROM reservacion_avion WHERE reservacion_id = ?",
+        "SELECT * FROM reservacion_avion WHERE reservacion_id = %s",
         (reservacion_id,)
     )
     avion = cursor.fetchone()
@@ -1811,11 +1811,11 @@ def vista_clientes():
     parametros = []
 
     if cliente_id:
-        query += " AND c.id = ?"
+        query += " AND c.id = %s"
         parametros.append(cliente_id)
 
     if nombre:
-        query += " AND c.nombre LIKE ?"
+        query += " AND c.nombre LIKE %s"
         parametros.append(f"%{nombre}%")
 
     query += " ORDER BY c.id DESC"
