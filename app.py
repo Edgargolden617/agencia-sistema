@@ -401,7 +401,6 @@ def gestionar_reservas():
         return redirect(url_for("login"))
 
     conn = get_db()
-    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
     # ================= FILTROS =================
@@ -453,10 +452,10 @@ def gestionar_reservas():
             r.estatus,
             r.saldo_a_favor AS saldo_a_favor,
             r.devolucion_cliente,
-            IFNULL(f.pagado_cliente, 0) AS pagado_cliente,
-            IFNULL(f.pagado_proveedor, 0) AS pagado_proveedor,
-            IFNULL(f.saldo_cliente, 0) AS saldo_cliente,
-            IFNULL(f.saldo_proveedor, 0) AS saldo_proveedor,       
+            COALENCE(f.pagado_cliente, 0) AS pagado_cliente,
+            COALENCE(f.pagado_proveedor, 0) AS pagado_proveedor,
+            COALENCE(f.saldo_cliente, 0) AS saldo_cliente,
+            COALENCE(f.saldo_proveedor, 0) AS saldo_proveedor,       
 
             -- CAMPOS DE AVION
             a.aerolinea,
