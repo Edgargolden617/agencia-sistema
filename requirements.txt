@@ -1,3 +1,5 @@
 flask  
 gunicorn  
 xhtml2pdf
+reportlab
+num2words
