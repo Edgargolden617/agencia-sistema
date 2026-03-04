@@ -1814,8 +1814,5 @@ def vista_clientes():
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     app.run(debug=True)
-=======
-    app.run(debug=True)
->>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd
+
