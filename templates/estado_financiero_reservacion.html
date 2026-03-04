@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -101,3 +102,108 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estado financiero</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { border-collapse: collapse; width: 70%; margin-bottom: 30px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        h2 { margin-top: 30px; }
+        .positivo { color: green; font-weight: bold; }
+        .negativo { color: red; font-weight: bold; }
+        .resumen { background-color: #e8e8e8; font-weight: bold; }
+        a { text-decoration: none; color: #2a3cad; }
+    </style>
+</head>
+<body>
+
+<h2>📊 Estado financiero de la reservación GT{{ reservacion_id }}</h2>
+
+<!-- Cliente → Agencia -->
+<table>
+<tr><th colspan="3">Cliente → Agencia</th></tr>
+<tr>
+    <td>Total</td>
+    <td>Pagado</td>
+    <td>Saldo</td>
+</tr>
+<tr>
+    <td>${{ estado.total_cliente }}</td>
+    <td>${{ estado.pagado_cliente }}</td>
+    <td>${{ estado.total_cliente - estado.pagado_cliente }}</td>
+</tr>
+</table>
+
+<!-- Agencia → Proveedor -->
+<table>
+<tr><th colspan="3">Agencia → Proveedor</th></tr>
+<tr>
+    <td>Total</td>
+    <td>Pagado</td>
+    <td>Saldo</td>
+</tr>
+<tr>
+    <td>${{ estado.total_proveedor }}</td>
+    <td>${{ estado.pagado_proveedor }}</td>
+    <td>${{ estado.total_proveedor - estado.pagado_proveedor }}</td>
+</tr>
+</table>
+
+<!-- Cancelaciones, devoluciones y penalidades -->
+{% if estado.penalidad_proveedor or estado.penalidad_agencia or estado.devolucion_cliente or estado.saldo_a_favor %}
+<h3>🛑 Cancelaciones y Ajustes</h3>
+<table>
+    {% if estado.penalidad_proveedor %}
+    <tr><td>Penalidad Proveedor</td><td class="negativo">${{ estado.penalidad_proveedor }}</td></tr>
+    {% endif %}
+    {% if estado.penalidad_agencia %}
+    <tr><td>Penalidad Agencia</td><td class="negativo">${{ estado.penalidad_agencia }}</td></tr>
+    {% endif %}
+    {% if estado.devolucion_cliente %}
+    <tr><td>Devolución Cliente</td><td class="positivo">${{ estado.devolucion_cliente }}</td></tr>
+    {% endif %}
+    {% if estado.saldo_a_favor %}
+    <tr><td>Saldo a Favor</td><td class="positivo">${{ estado.saldo_a_favor }}</td></tr>
+    {% endif %}
+</table>
+{% endif %}
+
+<!-- Resumen general final -->
+<h3>📌 Resumen General</h3>
+<table>
+  {% if estado.estatus == 'cancelada' %}
+    <tr class="resumen"><td><strong>Costo original cliente</strong></td><td>${{ estado.total_cliente }}</td></tr>
+    <tr class="resumen"><td><strong>Costo original proveedor</strong></td><td>${{ estado.total_proveedor }}</td></tr>
+  {% else %}
+    <tr class="resumen"><td><strong>Costo cliente</strong></td><td>${{ estado.total_cliente }}</td></tr>
+    <tr class="resumen"><td><strong>Costo proveedor</strong></td><td>${{ estado.total_proveedor }}</td></tr>
+  {% endif %}
+
+  <tr class="resumen"><td><strong>Cliente pagó</strong></td><td>${{ estado.pagado_cliente }}</td></tr>
+  <tr class="resumen"><td><strong>Proveedor recibió</strong></td><td>${{ estado.pagado_proveedor }}</td></tr>
+
+  {% if estado.estatus == 'cancelada' %}
+    <tr class="resumen"><td><strong>Devolución al cliente</strong></td><td>${{ estado.devolucion_cliente or 0 }}</td></tr>
+    <tr class="resumen"><td><strong>Saldo a favor del cliente</strong></td><td>${{ estado.saldo_a_favor or 0 }}</td></tr>
+    <tr class="resumen"><td><strong>Penalidad Proveedor</strong></td><td>${{ estado.penalidad_proveedor or 0 }}</td></tr>
+    <tr class="resumen"><td><strong>Penalidad Agencia</strong></td><td>${{ estado.penalidad_agencia or 0 }}</td></tr>
+  {% else %}
+    <tr class="resumen"><td><strong>Saldo pendiente cliente</strong></td>
+      <td>${{ estado.total_cliente - estado.pagado_cliente }}</td></tr>
+    <tr class="resumen"><td><strong>Saldo pendiente proveedor</strong></td>
+      <td>${{ estado.total_proveedor - estado.pagado_proveedor }}</td></tr>
+  {% endif %}
+
+  <tr class="resumen"><td><strong>Utilidad agencia</strong></td><td>${{ estado.utilidad or 0 }}</td></tr>
+</table>
+
+<a href="{{ url_for('gestionar_reservas') }}">← Volver a gestionar reservas</a>
+
+</body>
+</html>
+>>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd

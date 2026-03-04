@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -542,3 +543,549 @@ function imprimirRecibo(url) {
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Reservación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        fieldset {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        legend {
+            font-weight: bold;
+        }
+        hr {
+            margin: 10px 0;
+        }
+        label {
+            font-size: 12px;
+        }
+        input, select {
+            padding: 4px;
+        }
+        button {
+            padding: 6px 10px;
+        }
+
+        .tarjeta-datos {
+    border: 2px solid rgb(8, 8, 8);
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+    margin: 30px 0;
+}
+
+    .tarjeta-datos legend {
+    background-color: #111;
+    color: gold;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+    .tarjeta-datos p {
+    margin: 10px 0;
+    font-size: 15px;
+    color: #333;
+}
+
+    .tarjeta-datos strong {
+    color: #000;
+}
+    </style>
+</head>
+<body>
+
+
+
+
+
+
+<h2>Detalle de Reservación – GT{{ r.id }}</h2>
+<!-- ================= DATOS DEL CLIENTE ================= -->
+<fieldset class="tarjeta-datos">
+    <legend>Datos del Cliente</legend>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+        <div style="flex: 1 1 45%;">
+            <p><strong>ID Cliente:</strong> {{ r.id_cliente }}</p>
+            <p><strong>Nombre:</strong> {{ r.nombre }} {{ r.apellidos }}</p>
+            <p><strong>Celular:</strong> {{ r.celular }}</p>
+        </div>
+        <div style="flex: 1 1 45%;">
+            <p><strong>Email:</strong> {{ r.email }}</p>
+            <p><strong>Referencia:</strong> {{ r.referencia }}</p>
+        </div>
+    </div>
+</fieldset>
+
+
+
+<!-- ================= DATOS DE LA RESERVACIÓN ================= -->
+<fieldset>
+ <!-- DATOS DE RESERVACIÓN -->
+<h3>Datos de la Reservación</h3>
+
+{# Detectar tipo si no está definido #}
+{% set tipo = r.tipo_reservacion %}
+{% if not tipo %}
+  {% if r.hotel %}
+    {% set tipo = 'hotel' %}
+  {% elif r.aerolinea %}
+    {% set tipo = 'avion' %}
+  {% else %}
+    {% set tipo = 'otro' %}
+  {% endif %}
+{% endif %}
+<p><strong>Tipo:</strong> {{ r.tipo_reservacion|capitalize }}</p>
+
+{% if r.tipo == 'hotel' %}
+  <p><strong>Hotel:</strong> {{ r.hotel }}</p>
+  <p><strong>Ciudad:</strong> {{ r.ciudad }}</p>
+  <p><strong>Fecha Entrada:</strong> {{ r.fecha_entrada | fecha_corta }}</p>
+  <p><strong>Fecha Salida:</strong> {{ r.fecha_salida | fecha_corta }}</p>
+
+  {% if habitaciones %}
+    <h4>Habitaciones</h4>
+    {% for h in habitaciones %}
+      <p><strong>Habitación {{ h.habitacion_num }}:</strong></p>
+      <ul>
+        <li>Adultos: {{ h.adultos }}</li>
+        <li>Menores: {{ h.menores }}</li>
+        <li>Edades: {{ h.edades }}</li>
+      </ul>
+    {% endfor %}
+  {% else %}
+    <p><em>No se encontraron habitaciones asociadas.</em></p>
+  {% endif %}
+
+  <p><strong>Plan:</strong> {{ r.plan }}</p>
+  {% if r.tipo_reservacion == 'hotel' and r.tiempo_limite_hotel %}
+  <p><strong>Tiempo Límite:</strong> {{ r.tiempo_limite_hotel | formato_fecha_hora }}</p>
+
+{% elif r.tipo_reservacion == 'avion' and r.tiempo_limite_avion %}
+  <p><strong>Tiempo Límite:</strong> {{ r.tiempo_limite_avion | formato_fecha_hora }}</p>
+
+{% else %}
+  <p><strong>Tiempo Límite:</strong> —</p>
+{% endif %}
+  <p><strong>Clave Proveedor:</strong> {{ r.clave_proveedor_hotel }}</p>
+  <p><strong>Clave Hotel:</strong> {{ r.clave_hotel }}</p>
+  <p><strong>Observaciones:</strong> {{ r.observaciones_hotel }}</p>
+
+{% elif r.tipo_reservacion == 'avion' %}
+{% if r.tipo_reservacion == 'avion' and pasajeros %}
+  <h4>Pasajeros</h4>
+  <ul>
+    {% for p in pasajeros %}
+      <li>{{ p.nombre }} {{ p.apellidos }} — {{ p.fecha_nacimiento | fecha_corta }}</li>
+    {% endfor %}
+  </ul>
+{% elif r.tipo_reservacion == 'avion' %}
+  <p><em>No hay pasajeros registrados para esta reservación.</em></p>
+{% endif %}
+  <p><strong>Aerolínea:</strong> {{ r.aerolinea }}</p>
+  <p><strong>Vuelo:</strong> {{ r.vuelo }}</p>
+  <p><strong>Origen:</strong> {{ r.origen }}</p>
+  <p><strong>Destino:</strong> {{ r.destino }}</p>
+  <p><strong>Fecha Salida:</strong> {{ r.fecha_salida_avion | fecha_corta }}</p>
+  <p><strong>Hora Salida:</strong> {{ r.hora_salida }}</p>
+  <p><strong>Hora Llegada:</strong> {{ r.hora_llegada }}</p>
+
+  {% if r.tipo_vuelo == 'redondo' %}
+    <p><strong>Fecha Regreso:</strong> {{ r.fecha_regreso | fecha_corta }}</p>
+    <p><strong>Hora Regreso:</strong> {{ r.hora_regreso }}</p>
+    <p><strong>Hora Llegada Regreso:</strong> {{ r.hora_llegada_regreso }}</p>
+  {% endif %}
+
+  {% if r.tiene_escala %}
+    <p><strong>Escala:</strong> Sí</p>
+    <p><strong>Ciudad Escala:</strong> {{ r.ciudad_escala }}</p>
+    <p><strong>Hora Salida Escala:</strong> {{ r.hora_salida_escala }}</p>
+    <p><strong>Destino Escala:</strong> {{ r.destino_escala }}</p>
+    <p><strong>Hora Llegada Escala:</strong> {{ r.hora_llegada_escala }}</p>
+  {% else %}
+    <p><strong>Escala:</strong> No</p>
+  {% endif %}
+
+  {% if r.tipo_reservacion == 'hotel' and r.tiempo_limite_hotel %}
+  <p><strong>Tiempo Límite:</strong> {{ r.tiempo_limite_hotel | formato_fecha_hora }}</p>
+
+{% elif r.tipo_reservacion == 'avion' and r.tiempo_limite_avion %}
+  <p><strong>Tiempo Límite:</strong> {{ r.tiempo_limite_avion | formato_fecha_hora }}</p>
+
+{% else %}
+  <p><strong>Tiempo Límite:</strong> —</p>
+{% endif %}
+  <p><strong>Clave Proveedor:</strong> {{ r.clave_proveedor_avion }}</p>
+  <p><strong>Clave Aerolínea:</strong> {{ r.clave_aerolinea }}</p>
+  <p><strong>Observaciones:</strong> {{ r.observaciones_avion }}</p>
+{% endif %}
+
+    <hr>
+<div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 10px;">
+    <!-- Columna 1: Costo y utilidad -->
+    <div style="flex: 1 1 45%;">
+        <p><strong>Costo cliente:</strong> ${{ "%.2f"|format(r.costo_cliente) }}</p>
+        <p><strong>Costo agencia:</strong> ${{ "%.2f"|format(r.costo_proveedor) }}</p>
+        <p><strong>Utilidad:</strong> ${{ "%.2f"|format(r.utilidad) }}</p>
+    </div>
+
+    <!-- Columna 2: Proveedor y saldos -->
+    <div style="flex: 1 1 45%;">
+        <p><strong>Proveedor:</strong> {{ r.proveedor }}</p>
+        <p><strong>Saldo cliente:</strong> ${{ "%.2f"|format(saldo_cliente) }}</p>
+        <p><strong>Saldo agencia:</strong> ${{ "%.2f"|format(saldo_proveedor) }}</p>
+    </div>
+</div>
+{% if r.estatus in ["cancelada", "cancelada_con_saldo"] %}
+<hr>
+
+
+<p><strong>Penalidad proveedor:</strong> ${{ r.penalidad_proveedor | moneda }}</p>
+<p><strong>Penalidad agencia:</strong> ${{ r.penalidad_agencia | moneda }}</p>
+
+{% if r.devolucion_cliente > 0 %}
+    <p><strong>Devolución cliente:</strong> ${{ r.devolucion_cliente | moneda }}</p>
+{% elif r.saldo_a_favor > 0 %}
+    <p><strong>Saldo a favor cliente:</strong> <span style="color:green;">${{ r.saldo_a_favor | moneda }}</span></p>
+{% endif %}
+{% endif %}
+</fieldset>
+
+<!-- ================= INGRESAR DEPÓSITO ================= -->
+<fieldset>
+    <legend>Ingresar Depósito</legend>
+
+    <form method="POST" action="{{ url_for('registrar_pago', reservacion_id=r.id) }}">
+        <div style="display:flex; gap:8px; align-items:flex-end;">
+
+            <div style="flex:1">
+                <label>Tipo</label>
+                <select name="tipo_pago" required>
+                    <option value="cliente_agencia">Cliente → Agencia</option>
+                    <option value="agencia_proveedor">Agencia → Proveedor</option>
+                    <option value="agencia_proveedor">Agencia → Cliente</option>
+                </select>
+            </div>
+
+            <div style="flex:1">
+                <label>Forma</label>
+                <select name="forma_pago" required>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="T Crédito">T Crédito</option>
+                    <option value="T Débito">T Débito</option>
+                    <option value="Transferencia">Transferencia</option>
+                </select>
+            </div>
+
+            <div style="flex:1">
+                <label>Monto $</label>
+                <input type="number"
+       step="0.01"
+       name="monto"
+       required
+       onblur="formatearMonto(this)">
+            </div>
+
+           <div style="flex:1">
+                <label>Forma</label>
+                <select name="concepto" required>
+                    <option value="Pago Normal">Pago Normal</option>
+                    <option value="Penalidad Proveedor">Penalidad Proveedor</option>
+                    <option value="Penalidad Cliente">Penalidad Cliente</option>
+                    <option value="Devolucion por Cancelacion">Devilucion por Cancelacion</option>
+                </select>
+            </div>  
+
+
+            <div style="flex:2">
+                <label>Observación</label>
+                <input type="text" name="observacion">
+            </div>
+
+            <div>
+                <button type="submit">Guardar</button>
+            </div>
+
+        </div>
+    </form>
+</fieldset>
+
+
+<style>
+/* Estilo visual para el historial de pagos */
+fieldset {
+    border: 2px solid rgb(5, 5, 5);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 30px;
+    background: #fefefe;
+}
+
+legend {
+    background-color: #111;
+    color: gold;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+th {
+    background-color: #222;
+    color: white;
+    padding: 8px;
+    text-align: left;
+}
+
+td {
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.btn-imprimir {
+    margin-top: 5px;
+    background-color: #e0e0e0;
+    border: none;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+</style>
+<!-- ================= HISTORIAL DE PAGOS ================= -->
+<fieldset>
+    <legend>Historial de Pagos</legend>
+
+    {% if pagos %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Forma</th>
+                <th>Monto</th>
+                <th>concepto</th>
+                <th>Observación</th>
+                <th>Recibo</th>
+            </tr>
+
+            {% for p in pagos %}
+            <tr>
+                <td>{{ p.fecha }}</td>
+                <td>{{ p.tipo_pago }}</td>
+                <td>{{ p.forma_pago }}</td>
+                <td>${{ "%.2f"|format(p.monto) }}</td>
+                <td>{{ p.concepto }}</td>
+                <td>{{ p.observacion }}</td>
+
+                <td>
+    {% if p.recibo_id %}
+        <a href="{{ url_for('recibo_pago', pago_id=p.id) }}"
+           target="_blank"
+           style="font-weight:bold; color:#0a58ca;">
+           📄 Ver recibo
+        </a>
+        <button type="button"
+            class="btn-imprimir"
+            data-url="{{ url_for('recibo_pago', pago_id=p.id) }}">
+           🖨 Imprimir
+        </button>
+
+
+        <br>
+        <small>REC-{{ "%04d"|format(p.recibo_id) }}</small>
+    {% else %}
+        —
+    {% endif %}
+</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No hay pagos registrados.</p>
+    {% endif %}
+</fieldset>
+
+<!-- ================= VOUCHER ================= -->
+{% if saldo_cliente <= 0 %}
+<fieldset>
+    <legend>Voucher</legend>
+
+    <a href="{{ url_for('generar_voucher', reservacion_id=reservacion.id) }}"
+       target="_blank"
+       style="font-weight:bold; color:#0a58ca;">
+        📄 Abrir Voucher (PDF)
+    </a>
+
+    <button type="button"
+        class="btn-imprimir-voucher"
+        data-url="{{ url_for('generar_voucher', reservacion_id=reservacion.id) }}">
+        🖨 Imprimir Voucher
+    </button>
+
+    
+</fieldset>
+
+
+{% endif %}
+
+<br>
+<a href="{{ url_for('gestionar_reservas') }}">← Volver a gestionar reservas</a>
+<script>
+function formatearMonto(input) {
+    if (input.value !== "") {
+        input.value = parseFloat(input.value).toFixed(2);
+    }
+}
+</script>
+
+<script>
+function imprimirRecibo(url) {
+    const ventana = window.open(url, "_blank");
+    ventana.onload = function () {
+        ventana.print();
+    };
+}
+</script>
+
+<a href="{{ url_for('editar_reservacion', reservacion_id=r.id) }}">Cambios</a>
+
+<!-- ✅ INICIO: Formulario de Cancelación -->
+<form method="POST" action="{{ url_for('cancelar_reservacion', reservacion_id=reservacion.id) }}">
+
+    <div class="form-group mt-3">
+        <label><strong>¿Qué hacer con el dinero del cliente?</strong></label>
+        <select name="tipo_devolucion" class="form-control">
+            <option value="devolucion">Regresar el dinero al cliente</option>
+            <option value="saldo_favor">Dejar como saldo a favor</option>
+        </select>
+    </div>
+
+    <div class="form-group mt-3">
+        <label>¿Penalidad del proveedor?</label>
+        <select name="penalidad_proveedor" class="form-control">
+            <option value="no">No</option>
+            <option value="si">Sí</option>
+        </select>
+        <input type="number" step="0.01" min="0" name="monto_penalidad" placeholder="$ Monto penalidad proveedor" class="form-control mt-2">
+    </div>
+
+    <div class="form-group mt-3">
+        <label>¿Penalización al cliente?</label>
+        <select name="penalizacion_cliente" class="form-control">
+            <option value="no">No</option>
+            <option value="si">Sí</option>
+        </select>
+        <input type="number" step="0.01" min="0" name="monto_penalizacion" placeholder="$ Monto penalización cliente" class="form-control mt-2">
+    </div>
+
+    <div class="form-group mt-3">
+        <label>Comentarios</label>
+        <textarea name="comentarios" class="form-control" placeholder="Comentarios sobre la cancelación..."></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-danger mt-3">Cancelar Reservación</button>
+
+
+
+
+<!-- CONTENEDOR CON ESTILO ELEGANTE -->
+<div style="background: linear-gradient(to right, #2b2727, #312f2f); border: 2px solid gold; border-radius: 12px; padding: 30px; margin-top: 30px; color: gold; box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); position: relative;">
+
+    <!-- BOTÓN CAMBIOS -->
+    <div style="position: absolute; top: -50px; right: 10px;">
+        <a href="{{ url_for('editar_reservacion', reservacion_id=r.id) }}"
+           style="background: rgb(245, 220, 82); color: black; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+            ⚙️ Cambios
+        </a>
+    </div>
+
+    <!-- ✅ INICIO: Formulario de Cancelación -->
+    <form method="POST" action="{{ url_for('cancelar_reservacion', reservacion_id=reservacion.id) }}">
+
+        <!-- OPCIÓN DINERO CLIENTE -->
+        <div class="form-group mt-3" style="margin-bottom: 20px;">
+            <label style="font-weight: bold;">¿Qué hacer con el dinero del cliente?</label>
+            <select name="tipo_devolucion" class="form-control" style="width: 100%; margin-top: 6px;">
+                <option value="devolucion">Regresar el dinero al cliente</option>
+                <option value="saldo_favor">Dejar como saldo a favor</option>
+            </select>
+        </div>
+
+        <!-- PENALIDAD PROVEEDOR -->
+        <div class="form-group mt-3" style="margin-bottom: 20px;">
+            <label style="font-weight: bold;">¿Penalidad del proveedor?</label>
+            <div style="display: flex; gap: 10px; margin-top: 6px;">
+                <select name="penalidad_proveedor" class="form-control" style="width: 30%;">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                </select>
+                <input type="number" step="0.01" min="0" name="monto_penalidad" placeholder="$ Monto penalidad proveedor" class="form-control" style="width: 70%;">
+            </div>
+        </div>
+
+        <!-- PENALIZACIÓN CLIENTE -->
+        <div class="form-group mt-3" style="margin-bottom: 20px;">
+            <label style="font-weight: bold;">¿Penalización al cliente?</label>
+            <div style="display: flex; gap: 10px; margin-top: 6px;">
+                <select name="penalizacion_cliente" class="form-control" style="width: 30%;">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                </select>
+                <input type="number" step="0.01" min="0" name="monto_penalizacion" placeholder="$ Monto penalización cliente" class="form-control" style="width: 70%;">
+            </div>
+        </div>
+
+        <!-- COMENTARIOS -->
+        <div class="form-group mt-3" style="margin-bottom: 20px;">
+            <label style="font-weight: bold;">Comentarios</label>
+            <textarea name="comentarios" class="form-control" placeholder="Comentarios sobre la cancelación..." style="margin-top: 6px;"></textarea>
+        </div>
+
+        <!-- BOTÓN CANCELAR -->
+        <button type="submit"
+            style="background-color: #c78179; color: white; padding: 10px 25px; font-weight: bold; border: none; border-radius: 8px; display: block; margin: 0 auto; margin-top: 30px; box-shadow: 0 0 8px rgba(170, 80, 80, 0.4);">
+            ❌ Cancelar Reservación
+        </button>
+    </form>
+</div>
+
+</form>
+
+    
+    
+</form>
+
+
+
+
+
+
+
+</body>
+</html>
+>>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd

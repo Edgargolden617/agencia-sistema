@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
   table {
@@ -116,3 +117,123 @@
   <li><strong>Egresos:</strong> ${{ total_egresos | moneda }}</li>
   <li><strong>Saldo:</strong> ${{ saldo | moneda }}</li>
 </ul>
+=======
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  th {
+    background-color: #000;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+  }
+
+  td {
+    padding: 10px;
+    text-align: center;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+
+  h2 {
+    color: black;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+
+  h4 {
+    margin-top: 30px;
+    color: black;
+  }
+
+  ul {
+    font-weight: bold;
+    color: black;
+  }
+
+  .text-success {
+    color: green;
+  }
+
+  .text-danger {
+    color: red;
+  }
+</style>
+<h2>Reporte de Ingresos / Egresos</h2>
+
+<form method="post">
+  <label>Fecha inicio:</label>
+  <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}">
+  <label>Fecha fin:</label>
+  <input type="date" name="fecha_fin" value="{{ fecha_fin }}">
+  
+  <label>Ordenar por:</label>
+  <select name="orden">
+    <option value="fecha" {% if orden == 'fecha' %}selected{% endif %}>Por fecha</option>
+    <option value="tipo_pago" {% if orden == 'tipo_pago' %}selected{% endif %}>tipo de Pago (Ingresos arriba / Egresos)</option>
+  </select>
+  
+  <button type="submit">Buscar</button>
+</form>
+
+<table border="1" cellspacing="0" cellpadding="5">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>ID Reserva</th>
+      <th>ID Cliente</th>
+      <th>Cliente</th>
+      <th>Tipo</th>
+      <th>Tipo Pago</th>
+      <th>Recibo</th>
+      <th>Monto</th>
+      <th>Forma de Pago</th>
+      <th>Ingreso / Egreso</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in pagos %}
+    <tr>
+      <td>{{ p['fecha'] | formato_fecha_hora }}</td>
+      <td><a href="/reservacion/{{ p['reservacion_id'] }}">GT{{ p['reservacion_id'] }}</a></td>
+      <td>{{ p['cliente_id'] }}</td>
+      <td>{{ p['nombre_cliente'] }}</td>
+      <td>{{ p['tipo_reservacion'] }}</td>
+      <td>{{ p['tipo_pago'] }}</td>
+      <td>{{ p['recibo_id'] }}</td>
+      <td>${{ p['monto'] | moneda }}</td>
+      <td>{{ p['forma_pago'] }}</td>
+      <td>
+        {% if p.tipo_pago in ['cliente_agencia', 'proveedor_agencia'] %}
+    <span class="text-success"><strong>Ingreso</strong></span>
+  {% elif p.tipo_pago in ['agencia_proveedor', 'agencia_cliente'] %}
+    <span class="text-danger"><strong>Egreso</strong></span>
+  {% else %}
+    —
+  {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4>Resumen</h4>
+<ul>
+  <li><strong>Ingresos:</strong> ${{ total_ingresos | moneda }}</li>
+  <li><strong>Egresos:</strong> ${{ total_egresos | moneda }}</li>
+  <li><strong>Saldo:</strong> ${{ saldo | moneda }}</li>
+</ul>
+>>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd

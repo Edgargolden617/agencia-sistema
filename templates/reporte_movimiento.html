@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -174,3 +175,181 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Ingresos y Egresos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            color: #000;
+            font-size: 24px;
+            margin: 20px;
+        }
+
+        .filtros {
+            margin: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 0 6px rgba(0,0,0,0.1);
+        }
+
+        label {
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-left: 5px;
+            margin-right: 15px;
+        }
+
+        button {
+            background-color: #000;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        table {
+            width: 95%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            font-size: 14px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background-color: #000;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .ingreso {
+            background-color: #e0ffe0 !important;
+        }
+
+        .egreso {
+            background-color: #ffe0e0 !important;
+        }
+
+        .totales {
+            margin: 20px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Reporte de Ingresos / Egresos</h2>
+
+    <form method="get" class="filtros">
+        <label>Desde:
+            <input type="date" name="fecha_inicio" value="{{ request.args.get('fecha_inicio', '') }}">
+        </label>
+        <label>Hasta:
+            <input type="date" name="fecha_fin" value="{{ request.args.get('fecha_fin', '') }}">
+        </label>
+        <label>Recibo:
+            <input type="text" name="recibo" value="{{ request.args.get('recibo', '') }}">
+        </label>
+        <label>Tipo de pago:
+            <select name="tipo_pago">
+                <option value="">Todos</option>
+                <option value="cliente-agencia" {% if request.args.get('tipo_pago') == 'cliente-agencia' %}selected{% endif %}>Cliente → Agencia</option>
+                <option value="agencia-proveedor" {% if request.args.get('tipo_pago') == 'agencia-proveedor' %}selected{% endif %}>Agencia → Proveedor</option>
+            </select>
+        </label>
+        <label>Forma de pago:
+            <input type="text" name="forma_pago" value="{{ request.args.get('forma_pago', '') }}">
+        </label>
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Reservación ID</th>
+                <th>Cliente</th>
+                <th>Tipo de pago</th>
+                <th>Fecha</th>
+                <th>Recibo</th>
+                <th>Forma de pago</th>
+                <th>Monto</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set total_ingresos = 0 %}
+            {% set total_egresos = 0 %}
+            {% for pago in pagos %}
+                {% set clase = 'ingreso' if pago.tipo_pago == 'cliente-agencia' else 'egreso' %}
+                <tr class="{{ clase }}">
+                    <td>{{ pago.id }}</td>
+                    <td>
+  <a href="{{ url_for('detalle_reservacion', reservacion_id=pago.reservacion_id) }}">
+    GT{{ pago.reservacion_id }}
+  </a>
+</td>
+                    <td>{{ pago.cliente }}</td>
+                    <td>{{ pago.tipo_pago }}</td>
+                    <td>{{ pago.fecha | fecha_corta }}</td>
+                    <td>{{ pago.recibo_id }}</td>
+                    <td>{{ pago.forma_pago }}</td>
+                    <td>${{ '%.2f' | format(pago.monto) }}</td>
+                    <td>{{ pago.observaciones }}</td>
+                </tr>
+                {% if pago.tipo_pago == 'cliente-agencia' %}
+                    {% set total_ingresos = total_ingresos + pago.monto %}
+                {% elif pago.tipo_pago == 'agencia-proveedor' %}
+                    {% set total_egresos = total_egresos + pago.monto %}
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="totales">
+        <p>Total Ingresos: ${{ '%.2f' | format(total_ingresos) }}</p>
+        <p>Total Egresos: ${{ '%.2f' | format(total_egresos) }}</p>
+        <p>Total Neto: ${{ '%.2f' | format(total_ingresos - total_egresos) }}</p>
+    </div>
+
+</body>
+</html>
+>>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -42,3 +43,49 @@
   </div>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Tarjeta</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>{{ "Editar Tarjeta" if tarjeta else "Registrar Tarjeta" }}</h2>
+
+    <form action="{{ url_for('guardar_tarjeta') }}" method="post">
+      <input type="hidden" name="id" value="{{ tarjeta.id if tarjeta else '' }}">
+
+      <label>Nombre:</label><br>
+      <input type="text" name="nombre" required value="{{ tarjeta.nombre if tarjeta else '' }}"><br><br>
+
+      <label>Banco:</label><br>
+      <input type="text" name="banco" value="{{ tarjeta.banco if tarjeta else '' }}"><br><br>
+
+      <label>Últimos 4 dígitos:</label><br>
+      <input type="text" name="terminacion" maxlength="4" value="{{ tarjeta.terminacion if tarjeta else '' }}"><br><br>
+
+      <label>Tipo:</label><br>
+      <select name="tipo">
+        <option value="Crédito" {% if tarjeta and tarjeta.tipo == 'Crédito' %}selected{% endif %}>Crédito</option>
+        <option value="Débito" {% if tarjeta and tarjeta.tipo == 'Débito' %}selected{% endif %}>Débito</option>
+      </select><br><br>
+
+      <label>Titular:</label><br>
+      <input type="text" name="titular" value="{{ tarjeta.titular if tarjeta else '' }}"><br><br>
+
+      <label>¿Activa?:</label><br>
+      <select name="activa">
+        <option value="1" {% if not tarjeta or tarjeta.activa == 1 %}selected{% endif %}>Sí</option>
+        <option value="0" {% if tarjeta and tarjeta.activa == 0 %}selected{% endif %}>No</option>
+      </select><br><br>
+
+      <button type="submit">Guardar</button>
+      <a href="{{ url_for('lista_tarjetas') }}">Cancelar</a>
+    </form>
+  </div>
+</body>
+</html>
+>>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd

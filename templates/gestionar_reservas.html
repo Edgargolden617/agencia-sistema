@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -371,3 +372,378 @@ tr:hover {
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <title>Gestionar Reservas</title>
+
+    <style>
+/* === DISEÑO ESTILO CLIENTES PARA GESTIONAR RESERVAS (AJUSTADO) === */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #ffffff; /* FONDO GENERAL BLANCO */
+}
+
+h2, h3, legend {
+    /* Se eliminó el fondo negro aquí */
+    color: #333;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+/* Contenedores */
+fieldset {
+    border: none;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.08);
+}
+
+legend {
+    font-weight: bold;
+}
+
+/* Filtros */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.col {
+    flex: 1;
+    min-width: 180px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Botones */
+button,
+a[href*="gestionar_reservas"] {
+    background-color: #f3f3f0;
+    color: #0e0202 !important;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover,
+a[href*="gestionar_reservas"]:hover {
+    background-color: #333;
+}
+
+/* Tabla principal */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+th {
+    background-color: #000;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #444;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Filas alternadas */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* Íconos de estado */
+.text-success {
+    color: #198754 !important;
+}
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Tarjetas del dashboard */
+.dashboard-box {
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+    background: #ffffff; /* Fondo blanco temporal */
+    border: 1px solid #ccc;
+}
+
+.vencen-hoy {
+    border: 1px solid #dc3545;
+    background: #f8d7da;
+    color: #842029;
+}
+
+.vencen-pronto {
+    border: 1px solid #fd7e14;
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.pendientes-pago {
+    border: 1px solid #198754;
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.total-reservas {
+    border: 1px solid #0d6efd;
+    background: #cfe2ff;
+    color: #084298;
+}
+</style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h2>Gestionar Reservas</h2>
+
+<!-- ================= DASHBOARD ================= -->
+<div style="display:flex; gap:15px; margin-bottom:20px;">
+
+    <!-- Vencen Hoy -->
+    <a href="{{ url_for('gestionar_reservas', estatus='TODAS', filtro='hoy') }}" style="text-decoration: none; flex:1;">
+        <div style="padding:12px; border:1px solid #dc3545; background:#f8d7da; border-radius:6px; text-align:center;">
+            <strong>⚠️ Vencen Hoy</strong><br>
+            <span style="font-size:22px; color:#842029;">{{ vencen_hoy }}</span>
+        </div>
+    </a>
+
+    <!-- Vencen Pronto -->
+    <a href="{{ url_for('gestionar_reservas', estatus='TODAS', filtro='pronto') }}" style="text-decoration: none; flex:1;">
+        <div style="padding:12px; border:1px solid #fd7e14; background:#fff3cd; border-radius:6px; text-align:center;">
+            <strong>🟠 Vencen Pronto</strong><br>
+            <span style="font-size:22px; color:#664d03;">{{ vencen_pronto }}</span>
+        </div>
+    </a>
+
+    <!-- Pendientes de Pago -->
+    <a href="{{ url_for('gestionar_reservas', estatus='PENDIENTE DE PAGO') }}" style="text-decoration: none; flex:1;">
+        <div style="padding:12px; border:1px solid #198754; background:#d1e7dd; border-radius:6px; text-align:center;">
+            <strong>💰 Pendientes de Pago</strong><br>
+            <span style="font-size:22px; color:#0f5132;">{{ pendientes_pago }}</span>
+        </div>
+    </a>
+
+    <!-- Total Reservas -->
+    <a href="{{ url_for('gestionar_reservas') }}" style="text-decoration: none; flex:1;">
+        <div style="padding:12px; border:1px solid #0d6efd; background:#cfe2ff; border-radius:6px; text-align:center;">
+            <strong>📋 Total</strong><br>
+            <span style="font-size:22px; color:#084298;">{{ total_reservas }}</span>
+        </div>
+    </a>
+
+</div>
+
+<!-- Filtro visual actual -->
+{% if filtro %}
+  <h3>🔍 Mostrando: {{ filtro.replace('_', ' ').title() }}</h3>
+{% endif %}
+
+<h2>Gestionar Reservas</h2>
+
+<!-- ================= FILTROS ================= -->
+<fieldset>
+    <legend>Búsqueda</legend>
+
+    <form method="GET">
+
+        <div class="row">
+
+            <div class="col">
+                <label>ID Reservación (GT)</label>
+                <input type="number" name="id_reserva" value="{{ request.args.get('id_reserva','') }}">
+            </div>
+            <div class="col">
+                 <label>ID Cliente:</label>
+                <input type="number" name="id_cliente" value="{{ request.args.get('cliente_id','') }}">
+            </div>
+
+            <div class="col">
+                <label>Nombre o Apellido</label>
+                <input type="text" name="nombre" value="{{ request.args.get('nombre','') }}">
+            </div>
+
+            <div class="col">
+                <label>Fecha creación</label>
+                <input type="date" name="fecha" value="{{ request.args.get('fecha','') }}">
+            </div>
+
+            <div class="col">
+                <label>Estatus</label>
+                <select name="estatus">
+                    <option value="">Todos</option>
+                    <option value="confirmada" {% if request.args.get('estatus')=='confirmada' %}selected{% endif %}>Confirmada</option>
+                    <option value="pendiente de pago" {% if request.args.get('estatus')=='pendiente' %}selected{% endif %}>Pendiente de pago</option>
+                    <option value="pagada" {% if request.args.get('estatus')=='pagada' %}selected{% endif %}>Pagada</option>
+                    <option value="cancelada" {% if request.args.get('estatus')=='cancelada' %}selected{% endif %}>Cancelada</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label>Orden</label>
+                <select name="orden">
+                    <option value="desc" {% if request.args.get('orden')=='desc' %}selected{% endif %}>Última a primera</option>
+                    <option value="asc" {% if request.args.get('orden')=='asc' %}selected{% endif %}>Primera a última</option>
+                </select>
+            </div>
+
+        </div>
+
+        <br>
+        <button type="submit">Buscar</button>
+        <a href="{{ url_for('gestionar_reservas') }}">Limpiar</a>
+    </form>
+</fieldset>
+
+<!-- ================= LISTADO ================= -->
+<fieldset>
+    <legend>Listado de Reservaciones</legend>
+
+    {% if reservas %}
+    <table border="1" cellpadding="6" cellspacing="0">
+        <tr>
+            <th>ID Reserva</th>
+            <th>ID Cliente</th>
+            <th>Cliente</th>
+            <th>Tipo</th>
+            <th>Producto</th>
+            <th>Proveedor</th>
+            <th>Fecha Creacion</th>
+            <th>Tiempo Limite</th>
+            <th>Costo Cliente</th>
+            <th>Costo Agencia</th>
+            <th>Saldo Cliente</th>
+            <th>Saldo Proveedor</th>
+            <th>Estatus</th>
+            <th>Contabilidad</th>
+        </tr>
+
+        {% for r in reservas %}
+<tr>
+    <td>
+        <a href="{{ url_for('detalle_reservacion', reservacion_id=r.id_reserva) }}"
+           style="color:#0a58ca; font-weight:bold;">
+           GT{{ r.id_reserva }}
+        </a>
+    </td>
+
+    <td>{{ r.id_cliente }}</td>
+    <td>{{ r.cliente }}</td>
+    <td>{{ r.tipo_reservacion }}</td>
+    <td>{{ r.producto }}</td>
+    <td>{{ r.proveedor }}</td>
+    <td>{{ r.fecha_creacion | fecha_corta }}</td>
+    
+
+    <!-- TIEMPO LÍMITE (UNA SOLA VEZ) -->
+    <td>
+    {% if r.tiempo_limite %}
+        {% if r.alerta_vencimiento == "HOY" %}
+            <span style="color:#dc3545; font-weight:bold;">
+                ⚠️ {{ r.tiempo_limite | fecha_corta }}
+            </span>
+
+        {% elif r.alerta_vencimiento == "PROXIMO" %}
+            <span style="color:#fd7e14; font-weight:bold;">
+                ⚠️ {{ r.tiempo_limite | fecha_corta }}
+            </span>
+
+        {% else %}
+            {{ r.tiempo_limite | fecha_corta }}
+        {% endif %}
+    {% else %}
+        —
+    {% endif %}
+</td>
+
+    <td>${{ "{:,.2f}".format(r.costo_cliente) }}</td>
+    <td>${{ "{:,.2f}".format(r.costo_agencia) }}</td>
+
+    <td>
+        {% if r.saldo_cliente > 0 %}
+            <span style="color:#dc3545;">
+                ${{ "{:,.2f}".format(r.saldo_cliente) }}
+            </span>
+        {% else %}
+            <span style="color:#198754;">$0.00</span>
+        {% endif %}
+    </td>
+
+    <td>
+    {% if r.saldo_proveedor > 0 %}
+        <span style="color:#dc3545;">
+            ${{ "{:,.2f}".format(r.saldo_proveedor) }}
+        </span>
+    {% else %}
+        <span style="color:#198754;">$0.00</span>
+    {% endif %}
+    </td>
+
+<td>
+  <strong>{{ r.estatus_calculado | upper }}</strong>
+  {% if r.estatus_calculado == 'CANCELADA' %}
+  {% if r.saldo_a_favor > 0 %}
+    <i class="fas fa-dollar-sign text-success" title="Saldo a favor del cliente"></i>
+  {% elif r.devolucion_cliente > 0 %}
+    <i class="fas fa-undo-alt text-warning" title="Devolución al cliente"></i>
+  {% endif %}
+{% endif %}
+</td>
+    <td style="white-space: nowrap;">
+    <a href="{{ url_for('estado_financiero_reservacion', reservacion_id=r.id_reserva) }}"
+       class="btn btn-sm btn-outline-primary">
+        🧮 Estado
+    </a>
+
+    <a href="{{ url_for('pagos_reservacion', reservacion_id=r.id_reserva) }}"
+       class="btn btn-sm btn-outline-success">
+        💳 Pagos
+    </a>
+</td>
+
+</tr>
+{% endfor %}
+    </table>
+    {% else %}
+        <p>No se encontraron reservaciones.</p>
+    {% endif %}
+</fieldset>
+
+<br>
+<a href="{{ url_for('menu') }}">← Volver al menú</a>
+
+</body>
+</html>
+>>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd

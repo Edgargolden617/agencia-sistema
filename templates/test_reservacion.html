@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -98,3 +99,105 @@ function edades(sel, i) {
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Nueva Reservación</title>
+
+<style>
+body { font-family: Arial; background:#f5f7fa; padding:20px; }
+fieldset { background:#fff; padding:15px; margin-bottom:20px; }
+label { display:block; margin-top:10px; }
+select, input { width:100%; padding:6px; }
+.habitacion { border:1px dashed #aaa; padding:10px; margin-top:10px; }
+.edades { display:flex; gap:10px; margin-top:10px; }
+</style>
+</head>
+
+<body>
+
+<h2>Nueva Reservación</h2>
+
+<label>Tipo de reservación</label>
+<select id="tipo" onchange="mostrarTipo()">
+<option value="">Seleccione</option>
+<option value="hotel">Hotel</option>
+</select>
+
+<fieldset id="hotel" style="display:none;">
+<legend>Hotel</legend>
+
+<label>Hotel</label>
+<input type="text">
+
+<label>Habitaciones</label>
+<select id="habitaciones" onchange="crearHabitaciones()">
+<option value="">Seleccione</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+</select>
+
+<div id="contenedor"></div>
+</fieldset>
+
+<script>
+function mostrarTipo() {
+    const tipo = document.getElementById("tipo").value;
+    document.getElementById("hotel").style.display =
+        tipo === "hotel" ? "block" : "none";
+}
+
+function crearHabitaciones() {
+    const num = document.getElementById("habitaciones").value;
+    const cont = document.getElementById("contenedor");
+    cont.innerHTML = "";
+
+    for (let i = 1; i <= num; i++) {
+        cont.innerHTML += `
+        <div class="habitacion">
+            <strong>Habitación ${i}</strong>
+
+            <label>Menores</label>
+            <select onchange="edades(this, ${i})">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+
+            <div class="edades" id="edad_${i}"></div>
+        </div>`;
+    }
+}
+
+function edades(sel, i) {
+    const d = document.getElementById("edad_" + i);
+    d.innerHTML = "";
+
+    for (let x = 1; x <= sel.value; x++) {
+        d.innerHTML += `
+        <select>
+            <option>0</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option>
+        </select>`;
+    }
+}
+</script>
+
+</body>
+</html>
+>>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd

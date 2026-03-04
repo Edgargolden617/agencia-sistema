@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -83,3 +84,90 @@ th { background: #f2f2f2; }
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Detalle de Reservación</title>
+
+<style>
+h3 { margin-top: 0; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: center;
+}
+th { background: #f2f2f2; }
+.resumen {
+    margin-top: 10px;
+    background: #fafafa;
+    padding: 10px;
+    border-radius: 6px;
+}
+.saldo-rojo { color: red; font-weight: bold; }
+.saldo-verde { color: green; font-weight: bold; }
+</style>
+</head>
+
+<body>
+
+{% if r %}
+
+<h3>📄 Reservación GT{{ r.id }}</h3>
+
+<div class="resumen">
+    <p><strong>Cliente:</strong> {{ r.cliente }}</p>
+    <p><strong>Contacto:</strong> {{ r.celular }} | {{ r.email }}</p>
+    <p><strong>Proveedor:</strong> {{ r.proveedor }}</p>
+    <p><strong>Producto:</strong> {{ r.producto_reservado }}</p>
+    <p><strong>Tipo de reservación:</strong> {{ r.tipo_reservacion or "—" }}</p>
+</div>
+
+<hr>
+
+<h4>💳 Historial de pagos</h4>
+
+<table>
+<tr>
+    <th>Fecha</th>
+    <th>Tipo</th>
+    <th>Forma</th>
+    <th>Monto</th>
+    <th>Recibo</th>
+    <th>Observación</th>
+</tr>
+
+{% for p in pagos %}
+<tr>
+    <td>{{ p.fecha }}</td>
+    <td>{{ p.tipo_pago }}</td>
+    <td>{{ p.forma_pago }}</td>
+    <td>{{ p.monto | moneda }}</td>
+    <td>{{ p.recibo_id or "—" }}</td>
+    <td>{{ p.observacion or "—" }}</td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="6">Sin pagos registrados</td>
+</tr>
+{% endfor %}
+</table>
+
+{% else %}
+
+<p style="color:red; font-weight:bold;">
+    ❌ No se encontró la reservación
+</p>
+
+{% endif %}
+
+</body>
+</html>
+>>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd

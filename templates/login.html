@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -48,3 +49,55 @@
   <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Golden Tours | Iniciar Sesión</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+
+<body data-theme="light">
+
+  <!-- Selector de tema -->
+  <button id="themeToggle" class="theme-toggle">🌙</button>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+
+      <!-- Logo -->
+      <div class="logo">
+        <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Golden Tours">
+        <h1>GOLDEN TOURS</h1>
+        <span>Agencia de Viajes</span>
+      </div>
+
+      <!-- Formulario -->
+      <form method="POST">
+        <h2>Bienvenido</h2>
+
+        <div class="field">
+          <input type="text" name="usuario" placeholder="Usuario" required>
+        </div>
+
+        <div class="field">
+          <input type="password" name="password" placeholder="Contraseña" required>
+        </div>
+
+        <div class="options">
+          <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          Iniciar Sesión
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</body>
+</html>
+>>>>>>> d9a3fce4714361973437c9ff692fb4417ee55ccd
