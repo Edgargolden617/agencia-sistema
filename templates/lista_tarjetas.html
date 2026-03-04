@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tarjetas Registradas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Tarjetas Registradas</h2>
+
+    <p>
+      <a href="{{ url_for('nueva_tarjeta') }}">➕ Nueva tarjeta</a>
+      <a href="{{ url_for('menu') }}" style="margin-left: 20px;">🏠 Volver al menú</a>
+    </p>
+
+    {% if tarjetas %}
+    <table border="1" cellpadding="8" cellspacing="0">
+      <tr>
+        <th>Nombre</th>
+        <th>Banco</th>
+        <th>Últimos 4</th>
+        <th>Tipo</th>
+        <th>Titular</th>
+        <th>Activa</th>
+        <th>Acciones</th>
+      </tr>
+      {% for t in tarjetas %}
+      <tr>
+        <td>{{ t.nombre }}</td>
+        <td>{{ t.banco }}</td>
+        <td>{{ t.terminacion }}</td>
+        <td>{{ t.tipo }}</td>
+        <td>{{ t.titular }}</td>
+        <td>{{ "Sí" if t.activa else "No" }}</td>
+        <td>
+          <a href="{{ url_for('editar_tarjeta', id=t.id) }}">✏️ Editar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>No hay tarjetas registradas.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{% extends "menu.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Bienvenido, Administrador</h1>
+    <button class="btn">+ Crear Nueva Reservación</button>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Reservas Activas</h3>
+            <p>125</p>
+            <span class="positive">+15%</span>
+        </div>
+        <div class="card">
+            <h3>Total Clientes</h3>
+            <p>1,372</p>
+            <span class="neutral">+82 este mes</span>
+        </div>
+        <div class="card">
+            <h3>Total Ingresos</h3>
+            <p>$86,500</p>
+            <span class="positive">+10,250 en abril</span>
+        </div>
+        <div class="card">
+            <h3>Total Ingresos / Egresos</h3>
+            <p><span class="positive">$8,200</span> / <span class="negative">$2,150</span></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

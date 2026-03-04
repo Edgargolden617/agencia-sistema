@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificación de Voucher</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            padding: 30px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,.1);
+        }
+        .ok {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>✅ Voucher Verificado</h2>
+
+    <p><strong>Agencia:</strong> Golden Tours</p>
+    <p><strong>Cliente:</strong> {{ r.nombre }} {{ r.apellidos }}</p>
+    <p><strong>Reservación:</strong> {{ r.tipo_reservacion }}</p>
+    <p><strong>Monto:</strong> ${{ "%.2f"|format(r.costo_cliente) }}</p>
+    <p><strong>Estado:</strong> <span class="ok">{{ r.estado }}</span></p>
+
+    <hr>
+    <small>Documento válido generado por Golden Tours</small>
+</div>
+
+</body>
+</html>

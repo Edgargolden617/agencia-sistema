@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Golden Tours</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- CABECERA SUPERIOR NEGRA TRANSPARENTE -->
+
+
+
+
+  <!-- MENÚ LATERAL NEGRO TRANSPARENTE -->
+  <aside class="sidebar">
+  <div class="logo">
+    <img src="/static/img/logo.jpg" alt="Golden Tours">
+  </div>
+    <ul>
+      <li><a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-house"></i> Inicio</a></li>
+      <li><a href="{{ url_for('nueva_reservacion') }}"><i class="fa-solid fa-plane"></i> Reservaciones</a></li>
+      <li><a href="{{ url_for('gestionar_reservas') }}"><i class="fa-solid fa-list-check"></i> Gestionar Reservas</a></li>
+      <li><a href="{{ url_for('vista_clientes') }}"><i class="fa-solid fa-user"></i> Clientes</a></li>
+      <li><a href="{{ url_for('reporte_contabilidad_general') }}"><i class="fa-solid fa-file-invoice-dollar"></i> Contabilidad</a></li>
+      <li><a href="{{ url_for('reporte_corte_fechas') }}"><i class="fa-solid fa-money-bill-transfer"></i> Ingresos / Egresos</a></li>
+      <li><a href="#"><i class="fa-solid fa-users-gear"></i> Usuarios</a></li>
+      <li><a href="#"><i class="fa-solid fa-gear"></i> Configuración</a></li>
+    </ul>
+  </aside>
+
+
+
+    <!-- Tarjetas o contenido -->
+    <div class="tarjetas">
+      <!-- Aquí puedes insertar tarjetas estadísticas o contenido personalizado -->
+    </div>
+  </main>
+
+</body>
+</html>

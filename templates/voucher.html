@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 30px; }
+        h1 { color: #d4af37; }
+        .logo { text-align: center; margin-bottom: 20px; }
+        .seccion { border-top: 2px solid #ccc; margin-top: 20px; padding-top: 10px; }
+        .info { margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="logo">
+    <img src="{{ url_for('static', filename='logo.jpg') }}" width="150">
+    <h1>Golden Tours</h1>
+    <p>Agencia de Viajes</p>
+</div>
+
+<h2>Voucher de Reservación</h2>
+<p><strong>Cliente:</strong> {{ datos['nombre'] }} {{ datos['apellidos'] }}</p>
+
+{% if datos['tipo_reservacion'] == 'hotel' %}
+    <h3>Reservación de Hotel</h3>
+    <div class="info"><strong>Hotel:</strong> {{ datos['hotel'] }}</div>
+    <div class="info"><strong>Ciudad:</strong> {{ datos['ciudad'] }}</div>
+    <div class="info"><strong>Entrada:</strong> {{ datos['fecha_entrada'] }}</div>
+    <div class="info"><strong>Salida:</strong> {{ datos['fecha_salida'] }}</div>
+    <div class="info"><strong>Plan:</strong> {{ datos['plan'] }}</div>
+    <div class="info"><strong>Observaciones:</strong> {{ datos['observaciones'] }}</div>
+    <div class="info"><strong>Clave Proveedor:</strong> {{ datos['clave_proveedor'] }}</div>
+    <div class="info"><strong>Clave Hotel:</strong> {{ datos['clave_hotel'] }}</div>
+
+    <h4>Habitaciones:</h4>
+    {% for h in habitaciones %}
+        <div class="info">Hab. {{ h['habitacion_num'] }} - {{ h['adultos'] }} Adultos, {{ h['menores'] }} Menores ({{ h['edades'] }})</div>
+    {% endfor %}
+
+{% elif datos['tipo_reservacion'] == 'avion' %}
+    <h3>Ticket de Avión</h3>
+    {% for p in pasajeros %}
+        <div class="info"><strong>Pasajero:</strong> {{ p['nombre'] }} {{ p['apellidos'] }} ({{ p['fecha_nacimiento'] }})</div>
+    {% endfor %}
+    <div class="info"><strong>Aerolínea:</strong> {{ datos['aerolinea'] }}</div>
+    <div class="info"><strong>Vuelo:</strong> {{ datos['vuelo'] }}</div>
+    <div class="info"><strong>Origen:</strong> {{ datos['origen'] }}</div>
+    <div class="info"><strong>Destino:</strong> {{ datos['destino'] }}</div>
+    <div class="info"><strong>Fecha salida:</strong> {{ datos['fecha_salida'] }}</div>
+    <div class="info"><strong>Hora salida:</strong> {{ datos['hora_salida'] }} - <strong>Llegada:</strong> {{ datos['hora_llegada'] }}</div>
+
+    {% if datos['tiene_escala'] %}
+        <div class="info"><strong>Escala en:</strong> {{ datos['ciudad_escala'] }}</div>
+        <div class="info"><strong>Salida Escala:</strong> {{ datos['hora_salida_escala'] }} - <strong>Llegada Escala:</strong> {{ datos['hora_llegada_escala'] }}</div>
+    {% endif %}
+
+    {% if datos['tipo_vuelo'] == 'redondo' %}
+        <div class="info"><strong>Regreso:</strong> {{ datos['fecha_regreso'] }}</div>
+        <div class="info"><strong>Hora regreso:</strong> {{ datos['hora_regreso'] }} - <strong>Llegada:</strong> {{ datos['hora_llegada_regreso'] }}</div>
+    {% endif %}
+
+    <div class="info"><strong>Clave Aerolínea:</strong> {{ datos['clave_aerolinea'] }}</div>
+    <div class="info"><strong>Observaciones:</strong> {{ datos['observaciones_avion'] }}</div>
+{% endif %}
+
+<div class="seccion" style="text-align:center;">
+    <strong>Golden Tours Agencia de Viajes</strong>
+</div>
+
+</body>
+</html>

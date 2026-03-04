@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Reservación</title>
+    <style>
+        label { display: block; margin-top: 10px; }
+        input, select, textarea { width: 100%; padding: 5px; }
+        .bloque { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<h2>Editar Reservación #{{ r.id }}</h2>
+
+<form method="POST" action="{{ url_for('editar_reservacion', reservacion_id=r.id) }}">
+
+    <div class="bloque">
+        <h3>Datos generales</h3>
+
+        <label>Proveedor
+            <input type="text" name="proveedor" value="{{ r.proveedor }}">
+        </label>
+
+        <label>Costo Cliente
+            <input type="number" step="0.01" name="costo_cliente" value="{{ r.costo_cliente }}">
+        </label>
+
+        <label>Costo Proveedor
+            <input type="number" step="0.01" name="costo_proveedor" value="{{ r.costo_proveedor }}">
+        </label>
+    </div>
+
+    {% if hotel %}
+<div class="bloque">
+    <h3>Datos de Hotel</h3>
+
+    <label>Fecha Entrada
+        <input type="date" name="fecha_entrada" value="{{ hotel.fecha_entrada if hotel.fecha_entrada else '' }}">
+    </label>
+
+    <label>Fecha Salida
+        <input type="date" name="fecha_salida" value="{{ hotel.fecha_salida if hotel.fecha_salida else '' }}">
+    </label>
+
+    <label>Menores
+        <input type="number" name="menores" value="{{ hotel.menores if hotel.menores else '' }}">
+    </label>
+
+    <label>Plan
+        <input type="text" name="plan" value="{{ hotel.plan if hotel.plan else '' }}">
+    </label>
+
+    <label>Tiempo Límite
+        <input type="datetime-local" name="tiempo_limite" value="{{ hotel.tiempo_limite if hotel.tiempo_limite else '' }}">
+    </label>
+
+    <label>Clave Proveedor
+        <input type="text" name="clave_proveedor" value="{{ hotel.clave_proveedor if hotel.clave_proveedor else '' }}">
+    </label>
+
+    <label>Observaciones
+        <textarea name="observaciones">{{ hotel.observaciones if hotel.observaciones else '' }}</textarea>
+    </label>
+</div>
+{% endif %}
+
+{% if avion %}
+<div class="bloque">
+    <h3>Datos de Vuelo</h3>
+
+    <label>Origen
+        <input type="text" name="origen" value="{{ avion.origen if avion.origen else '' }}">
+    </label>
+
+    <label>Destino
+        <input type="text" name="destino" value="{{ avion.destino if avion.destino else '' }}">
+    </label>
+
+    <label>Vuelo
+        <input type="text" name="vuelo" value="{{ avion.vuelo if avion.vuelo else '' }}">
+    </label>
+
+    <label>Fecha Salida
+        <input type="date" name="fecha_salida" value="{{ avion.fecha_salida if avion.fecha_salida else '' }}">
+    </label>
+
+    <label>Hora Salida
+        <input type="time" name="hora_salida" value="{{ avion.hora_salida if avion.hora_salida else '' }}">
+    </label>
+
+    <label>Hora Llegada
+        <input type="time" name="hora_llegada" value="{{ avion.hora_llegada if avion.hora_llegada else '' }}">
+    </label>
+
+    <label>Tiempo Límite
+        <input type="datetime-local" name="tiempo_limite" value="{{ avion.tiempo_limite if avion.tiempo_limite else '' }}">
+    </label>
+</div>
+{% endif %}
+
+    <button type="submit">Guardar Cambios</button>
+    <a href="{{ url_for('detalle_reservacion', reservacion_id=r.id) }}">Cancelar</a>
+
+</form>
+
+</body>
+</html>

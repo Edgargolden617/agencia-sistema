@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recibo de Pagos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #fefefe;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        header img {
+            height: 70px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f8f8f8;
+            color: #444;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        a {
+            color: #0a58ca;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .title-block {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ENCABEZADO -->
+<header>
+    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo">
+    <div>
+        <h1>Golden Tours</h1>
+        <p style="margin: 0;">Recibo de Pagos</p>
+    </div>
+</header>
+
+<h2>💳 Pagos de la reservación GT{{ reservacion_id }}</h2>
+
+{% if pagos %}
+<table>
+<tr>
+    <th>Tipo</th>
+    <th>Concepto</th>
+    <th>Monto</th>
+    <th>Forma de pago</th>
+    <th>Fecha pago</th>
+    <th>Fecha límite</th>
+</tr>
+
+{% for p in pagos %}
+<tr>
+    <td>{{ p.tipo_pago }}</td>
+    <td>{{ p.concepto }}</td>
+    <td>${{ "{:,.2f}".format(p.monto) }}</td>
+    <td>{{ p.forma_pago }}</td>
+    <td>{{ p.fecha }}</td>
+ 
+    <td>{{ p.observacion or "—" }}</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<p>No hay pagos registrados para esta reservación.</p>
+{% endif %}
+
+<br>
+
+<a href="{{ url_for('gestionar_reservas') }}">← Volver a gestionar reservas</a>
+
+</body>
+</html>

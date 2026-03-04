@@ -1,0 +1,217 @@
+/* ===============================
+   VARIABLES GOLDEN TOURS
+================================ */
+:root {
+  --gold: #f5b301;
+  --gold-dark: #d39e00;
+
+  --glass-bg: rgba(15, 23, 42, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.15);
+
+  --text-light: #f9fafb;
+  --text-muted: #cbd5e1;
+
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --input-border: rgba(255, 255, 255, 0.25);
+}
+
+/* ===============================
+   RESET
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI";
+}
+
+/* ===============================
+   FONDO LOGIN (AEROPUERTO)
+================================ */
+body {
+  min-height: 100vh;
+  background: #0b1220;
+}
+
+/* Wrapper con imagen */
+.login-wrapper {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: url("../img/login-bg.jpg") center / cover no-repeat;
+  position: relative;
+}
+
+/* Oscurecer fondo para contraste */
+.login-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 15, 30, 0.65),
+    rgba(10, 15, 30, 0.85)
+  );
+}
+
+/* ===============================
+   TARJETA GLASS
+================================ */
+.login-card {
+  position: relative;
+  z-index: 2;
+
+  width: 380px;
+  padding: 36px 32px;
+
+  background: rgba(10, 18, 35, 0.25);  /* antes estaba más opaco */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  border-radius: 18px;
+  border: 1px solid var(--glass-border);
+
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+  color: var(--text-light);
+}
+
+/* ===============================
+   LOGO
+================================ */
+.logo {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.logo img {
+  width: 70px;
+  margin-bottom: 10px;
+}
+
+.logo h1 {
+  font-size: 20px;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.logo span {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ===============================
+   FORM
+================================ */
+form h2 {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 22px;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+input {
+  width: 100%;
+  height: 42px;
+
+  padding: 0 14px;
+  border-radius: 10px;
+
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-light);
+
+  font-size: 14px;
+}
+
+input::placeholder {
+  color: #d1d5db;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold);
+}
+
+/* ===============================
+   OPCIONES
+================================ */
+.options {
+  text-align: right;
+  margin: 12px 0 20px;
+}
+
+.options a {
+  font-size: 13px;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.options a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   BOTÓN DORADO
+================================ */
+.btn-primary {
+  width: 100%;
+  height: 44px;
+
+  background: linear-gradient(
+    to bottom,
+    var(--gold),
+    var(--gold-dark)
+  );
+
+  border: none;
+  border-radius: 12px;
+
+  font-weight: 600;
+  font-size: 15px;
+  color: #1f2933;
+
+  cursor: pointer;
+
+  box-shadow: 0 8px 20px rgba(245, 179, 1, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(245, 179, 1, 0.45);
+}
+
+/* ===============================
+   BOTÓN TEMA
+================================ */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+
+  z-index: 10;
+
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--glass-border);
+  color: white;
+
+  padding: 6px 10px;
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+body:after,
+html:after,
+main:after {
+  content: "";
+  display: none !important;
+}

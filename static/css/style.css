@@ -1,0 +1,934 @@
+/* ======== BASE GOLDEN TOURS ======== */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: url('../img/menu.jpg') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 20px;
+  color: #222;
+}
+
+/* ENCABEZADO NEGRO CON LETRAS DORADAS */
+h2 {
+  text-align: center;
+  color: #d4af37;
+  background: black;
+  padding: 10px 0;
+  border-top: 4px solid #d4af37;
+  border-bottom: 4px solid #d4af37;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+}
+
+/* BOTÓN VOLVER */
+#btn_volver_menu {
+  background: #000000;
+  color: white;
+  padding: 8px 20px;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+}
+
+/* FIELDSETS */
+fieldset {
+  border: 1px solid #d4af37;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  background: rgba(255,255,255,0.94);
+}
+
+legend {
+  font-weight: bold;
+  color: #2c3e50;
+  padding: 0 10px;
+  font-size: 16px;
+}
+
+/* DISTRIBUCIÓN EN 2 COLUMNAS */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  gap: 20px;
+}
+
+.form-row label {
+  flex: 0 0 150px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-top: 8px;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  flex: 1;
+  min-width: 200px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fdfdfd;
+}
+
+/* DOBLE CAMPO EN MISMO RENGLÓN: NOMBRE + APELLIDOS */
+.form-row.double {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-row.double > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+}
+
+.form-row.double > div:last-child {
+  margin-right: 0;
+}
+
+.form-row.double label {
+  margin-bottom: 4px;
+}
+
+/* BOTÓN GUARDAR */
+button[type="submit"] {
+  background: linear-gradient(to right, #d4af37, #f1c45c);
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 22px;
+  font-size: 16px;
+  border-radius: 6px;
+  margin-top: 20px;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* SELECT tipo de reservación */
+select[name="tipo_reservacion"] {
+  width: 50%;
+  min-width: 280px;
+  max-width: 400px;
+}
+
+/* CONTENEDORES DINÁMICOS */
+#contenedor_habitaciones,
+#contenedor_pasajeros {
+  margin-top: 15px;
+  padding-left: 20px;
+}
+
+/* CHECKBOX e INPUTS INLINE */
+input[type="checkbox"],
+input[type="radio"] {
+  margin-right: 5px;
+  transform: scale(1.2);
+}
+
+/* ADAPTACIÓN MÓVIL */
+@media (max-width: 768px) {
+  .form-row,
+  .form-row.double {
+    flex-direction: column;
+  }
+
+  .form-row.double > div {
+    margin-right: 0;
+  }
+
+  select[name="tipo_reservacion"] {
+    width: 100%;
+  }
+}
+/* Limitar ancho máximo de los selects que son muy anchos */
+select,
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="datetime-local"],
+textarea {
+  max-width: 400px;
+}
+
+/* Estilo específico para el primer campo grande del tipo de reservación */
+#tipo_reservacion {
+  width: 300px !important;
+}
+
+.form-row-doble {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.form-row-doble > div {
+  flex: 1;
+}
+
+.form-row-triple {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.form-row-triple > div {
+  flex: 1;
+}
+
+/* ========== DISTRIBUCIÓN AUTOMÁTICA EN 2 O 3 COLUMNAS ========== */
+form fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  border: 2px solid black;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 10px;
+}
+
+/* Cada bloque de label + input */
+form fieldset > div,
+.form-row {
+  flex: 1 1 30%;
+  min-width: 280px;
+}
+
+/* Encabezado principal */
+h2 {
+  background-color: black;
+  color: gold;
+  padding: 16px;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  border-top: 4px solid black;
+  border-bottom: 4px solid black;
+  font-weight: bold;
+}
+
+/* Inputs, selects, textareas */
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Etiquetas */
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Botones: negro con letras doradas */
+button,
+.btn {
+  background-color: black;
+  color: gold;
+  padding: 12px 24px;
+  border: 2px solid black;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 10px 5px;
+}
+
+button:hover,
+.btn:hover {
+  background-color: #ffffff;
+  color: #0e0d0d;
+}
+
+/* Textareas específicos */
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Calendarios visibles simulados */
+input[readonly] {
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+/* Estilo para checkbox y radio */
+input[type="checkbox"],
+input[type="radio"] {
+  margin-right: 6px;
+}
+/* Contenedor general del formulario */
+form {
+    max-width: 95%;
+    margin: 0 auto;
+    font-size: 15px;
+}
+
+/* Agrupar todo en filas flexibles */
+form .form-group,
+#bloque_hotel .form-group,
+#bloque_avion .form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+/* Estilo de las etiquetas */
+form label {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 3px;
+}
+
+/* Estilo de inputs, selects y textarea */
+form input[type="text"],
+form input[type="email"],
+form input[type="date"],
+form input[type="datetime-local"],
+form input[type="number"],
+form select,
+form textarea {
+    flex: 1 1 28%;
+    min-width: 180px;
+    max-width: 100%;
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Inputs dentro de campos ocultos */
+#bloque_hotel input,
+#bloque_hotel select,
+#bloque_hotel textarea,
+#bloque_avion input,
+#bloque_avion select,
+#bloque_avion textarea {
+    font-size: 14px;
+    padding: 6px 10px;
+    flex: 1 1 28%;
+    min-width: 180px;
+}
+
+/* Botones en negro */
+button, .boton-negro {
+    background-color: black !important;
+    color: white !important;
+    border: none;
+    padding: 10px 16px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover, .boton-negro:hover {
+    background-color: #222 !important;
+}
+
+/* Título 'Nueva Reservación' en negro con letras doradas */
+h2 {
+    background-color: #000;
+    color: gold;
+    text-align: center;
+    padding: 12px 0;
+    border-radius: 6px;
+    font-size: 24px;
+    font-family: 'Georgia', serif;
+    margin-bottom: 20px;
+}
+
+/* Espaciado y borde para secciones */
+fieldset {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #999;
+    border-radius: 5px;
+}
+
+/* INPUTS Y SELECTS DENTRO DE BLOQUE HOTEL Y AVION (aunque estén ocultos) */
+#bloque_hotel input,
+#bloque_hotel select,
+#bloque_hotel textarea,
+#bloque_avion input,
+#bloque_avion select,
+#bloque_avion textarea {
+    width: 100% !important;
+    max-width: 280px !important;
+    min-width: 160px !important;
+    font-size: 14px !important;
+    padding: 6px 10px !important;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+/* ALINEACIÓN DE LABEL + INPUT en renglones ordenados */
+#bloque_hotel .form-group,
+#bloque_avion .form-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+/* LABEL PEGADO AL INPUT */
+#bloque_hotel label,
+#bloque_avion label {
+    min-width: 120px;
+    margin-bottom: 3px;
+    font-size: 14px;
+}
+
+/* FORMULARIO GENERAL TAMBIÉN AJUSTADO */
+form input[type="text"],
+form input[type="email"],
+form input[type="number"],
+form input[type="date"],
+form input[type="datetime-local"],
+form select,
+form textarea {
+    width: 100%;
+    max-width: 280px;
+    min-width: 160px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* BOTONES EN NEGRO */
+button, .boton-negro {
+    background-color: black !important;
+    color: white !important;
+    border: none;
+    padding: 10px 16px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+/* Aplica solo a los inputs y selects dentro de los bloques condicionales */
+#bloque_hotel .form-group,
+#bloque_avion .form-group {
+    display: inline-block;
+    width: 20%;
+    min-width: 200px;
+    margin-right: 2%;
+    vertical-align: top;
+}
+
+/* Alinea los label más cerca del input */
+#bloque_hotel .form-group label,
+#bloque_avion .form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Estilo general para inputs en estos bloques */
+#bloque_hotel input, 
+#bloque_hotel select,
+#bloque_avion input, 
+#bloque_avion select {
+    width: 50%;
+    padding: 6px 10px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* ====== ESTILO DE DISTRIBUCIÓN ====== */
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.form-row label {
+  min-width: 100px;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+/* ====== APLICAR DISTRIBUCIÓN A LOS CAMPOS OCULTOS ====== */
+#bloque_hotel .form-group,
+#bloque_avion .form-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+#bloque_hotel label,
+#bloque_avion label {
+  min-width: 120px;
+  margin-right: 5px;
+}
+
+#bloque_hotel input,
+#bloque_hotel select,
+#bloque_avion input,
+#bloque_avion select {
+  width: 220px !important;
+  padding: 5px 8px;
+  font-size: 14px;
+}
+
+/* ====== HAZ LOS INPUTS MÁS CORTOS Y ELEGANTES ====== */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+select,
+textarea {
+  font-size: 14px;
+  padding: 4px 8px;
+  width: auto;
+  max-width: 250px;
+}
+
+/* ====== FORMATO DE BLOQUES POR RENGLÓN ====== */
+#bloque_hotel,
+#bloque_avion,
+#bloque_cliente {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ====== BOTONES NEGROS ====== */
+button,
+.btn {
+  background-color: black !important;
+  color: gold !important;
+  border: 1px solid gold;
+  padding: 6px 14px;
+  font-weight: bold;
+  font-family: 'Georgia', serif;
+}
+
+button:hover,
+.btn:hover {
+  background-color: #222 !important;
+  color: #ffd700 !important;
+  border-color: #ffd700;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  max-width: 300px;
+  flex: 1;
+}
+
+.form-group label {
+  margin-bottom: 4px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 5px 8px;
+  font-size: 14px;
+}
+
+.form-row-doble,
+.form-row-triple {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.form-row-doble > div {
+  flex: 1 1 45%;
+  min-width: 200px;
+}
+
+.form-row-triple > div {
+  flex: 1 1 30%;
+  min-width: 160px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="datetime-local"],
+select,
+textarea {
+  width: 100%;
+  padding: 5px 8px;
+  font-size: 14px;
+}
+
+/* ===== Texto negro para formularios ===== */
+form, fieldset, label, legend, input, select, textarea {
+  color: #000 !important;
+}
+
+/* ===== Botones en negro con texto blanco ===== */
+button, .boton-negro, input[type="submit"] {
+  background-color: #000 !important;
+  color: #fff !important;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover, .boton-negro:hover, input[type="submit"]:hover {
+  background-color: #222 !important;
+}
+
+/* Estilo específico por si tienes estos botones con IDs */
+#boton_guardar_reservacion,
+#boton_regresar_menu {
+  background-color: #000 !important;
+  color: #cac70e !important;
+}
+
+/* Opcional: Asegura que el texto de los selects también se vea negro */
+select option {
+  color: #000;
+}
+
+/* Asegura contraste si hay campos deshabilitados */
+input:disabled, select:disabled, textarea:disabled {
+  background-color: #eee;
+  color: #444;
+}
+
+/* Estilo para campos en filas dobles y triples */
+.form-row-doble, .form-row-triple {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.form-row-doble > div,
+.form-row-triple > div {
+  flex: 1;
+}
+
+/* Estilo general de inputs y etiquetas */
+fieldset label,
+fieldset input,
+fieldset select,
+fieldset textarea {
+  color: black !important;
+  font-size: 14px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+fieldset input,
+fieldset select,
+fieldset textarea {
+  width: 100%;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Botones en negro */
+button, .btn {
+  background-color: black !important;
+  color: white !important;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+button:hover, .btn:hover {
+  opacity: 0.85;
+}
+
+fieldset {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 0 auto 30px auto;
+  width: 95%;
+  max-width: 1100px;
+  border-radius: 10px;
+  background-color: #ffffffd9;
+}
+
+.form-row,
+.form-row-doble,
+.form-row-triple {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-row > *,
+.form-row-doble > *,
+.form-row-triple > * {
+  flex: 1;
+  min-width: 200px;
+}
+
+label {
+  font-weight: 500;
+  color: #000;
+}
+
+input,
+select,
+textarea {
+  width: 100% !important;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  width: auto !important;
+  margin-right: 6px;
+}
+
+button,
+.btn {
+  background-color: #000 !important;
+  color: white !important;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover,
+.btn:hover {
+  opacity: 0.85;
+}
+fieldset {
+  margin: 10px auto;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 96%;
+}
+
+.form-row,
+.form-row-doble,
+.form-row-triple {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  gap: 20px;
+}
+
+.form-row-doble > div,
+.form-row-triple > div {
+  flex: 1;
+  min-width: 250px;
+}
+
+label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 4px;
+  color: #222 !important;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #222 !important;
+}
+
+.form-row-doble {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.form-row-doble > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row-triple {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.form-row-triple > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==== ESTILOS GENERALES ==== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #f0f2f5;
+}
+
+h2, h3, legend {
+    color: #fff;
+    background-color: #000;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+/* ==== FILTROS Y FIELDSETS ==== */
+fieldset {
+    border: none;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.08);
+}
+
+legend {
+    background-color: #fff;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* ==== FORMULARIO DE BÚSQUEDA ==== */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.col {
+    flex: 1;
+    min-width: 180px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* ==== BOTONES ==== */
+button,
+a[href*="gestionar_reservas"] {
+    background-color: #000;
+    color: #fff !important;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover,
+a[href*="gestionar_reservas"]:hover {
+    background-color: #333;
+}
+
+/* ==== TABLA DE RESERVAS ==== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+th {
+    background-color: #000;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #444;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Filas alternadas */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* ==== ESTATUS Y SALDOS ==== */
+.text-success {
+    color: #198754 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}

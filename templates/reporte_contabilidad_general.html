@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>📘 Contabilidad General</title>
+
+<style>
+body { font-family: Arial, sans-serif; }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 14px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+th {
+    background-color: #000;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f0f0f0;
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+legend { font-weight: bold; }
+
+.filtros input {
+    margin-right: 8px;
+    padding: 4px;
+}
+
+.saldo-rojo { color: red; font-weight: bold; }
+.saldo-verde { color: green; font-weight: bold; }
+
+.fila-click:hover { background: #f9f9f9; }
+
+.btn-toggle { cursor: pointer; }
+
+/* ===== MODAL ===== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background: #fff;
+    width: 70%;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.cerrar {
+    float: right;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+
+</style>
+
+<script>
+function toggleHistorial(id) {
+    const fila = document.getElementById("historial-" + id);
+    fila.style.display = (fila.style.display === "none") ? "table-row" : "none";
+}
+
+function abrirModal(id) {
+    fetch("/detalle_reservacion_modal/" + id)
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("contenidoModal").innerHTML = html;
+            document.getElementById("modalDetalle").style.display = "block";
+        });
+}
+
+function cerrarModal() {
+    document.getElementById("modalDetalle").style.display = "none";
+    document.getElementById("contenidoModal").innerHTML = "";
+}
+</script>
+
+</head>
+<body>
+
+<h2>📘 Contabilidad General</h2>
+
+<!-- ================= FILTROS ================= -->
+<form method="get" class="filtros">
+    Cliente:
+    <input type="text" name="cliente" value="{{ request.args.cliente }}">
+
+    Proveedor:
+    <input type="text" name="proveedor" value="{{ request.args.proveedor }}">
+
+    Reservación:
+    <input type="text" name="reservacion" value="{{ request.args.reservacion }}">
+
+    Desde:
+    <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}">
+
+    Hasta:
+    <input type="date" name="fecha_fin" value="{{ fecha_fin }}">
+
+    <button type="submit">Buscar</button>
+</form>
+
+<a href="{{ url_for('reporte_contabilidad_general') }}"
+   style="display:inline-block; margin-top:8px;">
+    🔄 Mostrar todas las reservaciones
+</a>
+
+<!-- ================= RESUMEN ================= -->
+<fieldset>
+<legend>Resumen General</legend>
+
+<table>
+<tr>
+    <th>Concepto</th>
+    <th>Total</th>
+    <th>Pagado</th>
+    <th>Saldo</th>
+</tr>
+
+<tr>
+    <td>Cliente → Agencia</td>
+    <td>{{ resumen.total_cliente | moneda }}</td>
+    <td>{{ resumen.pagado_cliente | moneda }}</td>
+    <td class="{% if resumen.saldo_cliente != 0 %}saldo-rojo{% else %}saldo-verde{% endif %}">
+        {{ resumen.saldo_cliente | moneda }}
+    </td>
+</tr>
+
+<tr>
+    <td>Agencia → Proveedor</td>
+    <td>{{ resumen.total_proveedor | moneda }}</td>
+    <td>{{ resumen.pagado_proveedor | moneda }}</td>
+    <td class="{% if resumen.saldo_proveedor == 0 %}saldo-verde{% else %}saldo-rojo{% endif %}">
+        {{ resumen.saldo_proveedor | moneda }}
+    </td>
+</tr>
+
+<tr>
+    <td><strong>Utilidad</strong></td>
+    <td colspan="3"><strong>{{ resumen.utilidad | moneda }}</strong></td>
+</tr>
+</table>
+</fieldset>
+
+<!-- ================= DETALLE ================= -->
+<fieldset>
+<legend>Detalle por reservación</legend>
+
+<table>
+<tr>
+    <th></th>
+    <th>Fecha</th>
+    <th>Reservación</th>
+    <th>Cliente</th>
+    <th>Proveedor</th>
+    <th>Total Cliente</th>
+    <th>Saldo Cliente</th>
+    <th>Total Proveedor</th>
+    <th>Saldo Proveedor</th>
+    <th>Utilidad</th>
+</tr>
+
+{% for r in reservas %}
+<tr class="fila-click">
+    <td class="btn-toggle" onclick="toggleHistorial('{{ r.reservacion_id }}')">➕</td>
+    <td>{{ r.fecha_creacion }}</td>
+
+    <td>
+        <a href="javascript:void(0)" onclick="abrirModal('{{ r.reservacion_id }}')">
+            GT{{ r.reservacion_id }}
+        </a>
+    </td>
+
+    <td>{{ r.cliente }}</td>
+    <td>{{ r.proveedor }}</td>
+
+    <td>{{ r.total_cliente | moneda }}</td>
+    <td class="{% if r.saldo_cliente == 0 %}saldo-verde{% else %}saldo-rojo{% endif %}">
+        {{ r.saldo_cliente | moneda }}
+    </td>
+
+    <td>{{ r.total_proveedor | moneda }}</td>
+    <td class="{% if r.saldo_proveedor == 0 %}saldo-verde{% else %}saldo-rojo{% endif %}">
+        {{ r.saldo_proveedor | moneda }}
+    </td>
+
+    <td><strong>{{ r.utilidad | moneda }}</strong></td>
+</tr>
+
+<!-- ===== HISTORIAL ===== -->
+<tr id="historial-{{ r.reservacion_id }}" style="display:none;">
+<td colspan="10">
+
+<strong>💳 Historial de pagos</strong>
+
+<table width="100%">
+<tr>
+    <th>Fecha</th>
+    <th>Tipo</th>
+    <th>Forma</th>
+    <th>Monto</th>
+    <th>concepto</th>
+    <th>Observación</th>
+</tr>
+
+{% for p in r.pagos %}
+<tr>
+    <td>{{ p.fecha }}</td>
+    <td>{{ p.tipo_pago }}</td>
+    <td>{{ p.forma_pago }}</td>
+    <td>{{ p.monto | moneda }}</td>
+    <td>{{ p.concepto }}</td>
+    <td>{{ p.observacion or "—" }}</td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="5">Sin pagos registrados</td>
+</tr>
+{% endfor %}
+</table>
+
+</td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="10">No hay registros</td>
+</tr>
+{% endfor %}
+</table>
+</fieldset>
+
+<br>
+
+<a href="{{ url_for('menu') }}">← Volver al menú</a>
+
+<!-- ================= MODAL ================= -->
+<div id="modalDetalle" class="modal">
+  <div class="modal-content">
+    <span class="cerrar" onclick="cerrarModal()">✖</span>
+    <div id="contenidoModal"></div>
+  </div>
+</div>
+
+</body>
+</html>

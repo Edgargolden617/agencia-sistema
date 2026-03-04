@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  background: url("../img/menu-dia.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* HEADER SUPERIOR */
+.header {
+  background-color: #000;
+  color: gold;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid gold;
+}
+
+.logo-header {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.titulo-header {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.usuario-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.foto-perfil, .icono-config {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+/* MENÚ LATERAL */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 15px; /* Margen lateral a la izquierda */
+  width: 230px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.92); /* Negro fuerte semitransparente */
+  border-right: 3px solid gold;
+  color: gold;
+  padding-top: 80px;
+  z-index: 10;
+  border-radius: 0 10px 10px 0; /* Bordes redondeados a la derecha */
+}
+
+/* Menú lateral contenido */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 15px 0;
+}
+
+.sidebar a {
+  color: gold;
+  text-decoration: none;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar a:hover {
+  background-color: rgba(255, 215, 0, 0.1);
+  border-left: 5px solid gold;
+}
+
+/* Íconos en el menú */
+.icono {
+  margin-right: 10px;
+}
+
+/* LOGOTIPO EN LA PARTE SUPERIOR DEL MENÚ */
+.logo {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 20px;
+}
+
+.logo img {
+  max-width: 80px;
+  filter: drop-shadow(2px 2px 4px black);
+}
+
+/* CONTENIDO PRINCIPAL */
+.contenido {
+  margin-left: 270px; /* compensa el margen izquierdo + ancho sidebar */
+  padding: 80px;
+  color: white;
+  text-shadow: 1px 1px 2px black;
+}
+
+/* BIENVENIDA */
+.bienvenida h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.btn-reservar {
+  background-color: gold;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  transition: 0.3s;
+}
+
+.btn-reservar:hover {
+  background-color: #e6be00;
+}
+
+.logo {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: -40px;
+  position: relative;
+  z-index: 20; /* asegura que esté por encima del fondo oscuro */
+}
+
+.logo img {
+  max-width: 120px;
+  height: auto;
+  filter: drop-shadow(2px 2px 4px black);
+}
