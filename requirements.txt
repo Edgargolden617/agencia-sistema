@@ -1,5 +1,5 @@
-flask  
-gunicorn  
-xhtml2pdf
-reportlab
-num2words
+Flask==3.0.3
+gunicorn==21.2.0
+xhtml2pdf==0.2.11
+reportlab==4.0.7
+num2words==0.5.13
