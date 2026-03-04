@@ -1,53 +1,23 @@
+import os
 import sqlite3
+import psycopg2
 
-conn = sqlite3.connect("agencia.db")
-cursor = conn.cursor()
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS clientes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nombre TEXT,
-    apellidos TEXT,
-    celular TEXT,
-    referencia TEXT
-)
-""")
+def get_db():
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS reservaciones (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    fecha_creacion TEXT,
-    cliente_id INTEGER,
-    tipo_reservacion TEXT,
-    descripcion TEXT,
-    proveedor TEXT,
-    costo_cliente REAL,
-    costo_proveedor REAL,
-    utilidad REAL,
-    estatus TEXT
-)
-""")
+    DATABASE_URL = os.environ.get("DATABASE_URL")
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS reservacion_hotel (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    reservacion_id INTEGER,
-    ciudad TEXT,
-    fecha_entrada TEXT,
-    fecha_salida TEXT,
-    habitaciones INTEGER,
-    tipo_habitacion TEXT,
-    menores INTEGER,
-    plan TEXT,
-    tiempo_limite TEXT,
-    observaciones TEXT,
-    clave_proveedor TEXT,
-    clave_hotel TEXT,
-    observacion_pagos TEXT
-)
-""")
+    # Si existe conexión a PostgreSQL (Render)
+    if DATABASE_URL:
 
-conn.commit()
-conn.close()
+        if DATABASE_URL.startswith("postgres://"):
+            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-print("Base de datos creada correctamente")
+        conn = psycopg2.connect(DATABASE_URL)
+        return conn
+
+    # Si no existe (modo local)
+    else:
+        conn = sqlite3.connect("agencia.db")
+        conn.row_factory = sqlite3.Row
+        return conn
