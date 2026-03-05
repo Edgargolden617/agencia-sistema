@@ -156,8 +156,7 @@ def get_db():
 
     else:
         conn = sqlite3.connect("agencia.db")
-        conn.row_factory = sqlite3.Row
-        return conn
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 # =========================
 # LOGIN
@@ -837,8 +836,7 @@ def estado_financiero_reservacion(reservacion_id):
         return redirect(url_for("login"))
 
     conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # Datos actuales de la reservación
     cursor.execute("SELECT * FROM reservaciones WHERE id = %s", (reservacion_id,))
@@ -888,8 +886,7 @@ def contabilidad_reservacion(reservacion_id):
         return redirect(url_for("login"))
 
     conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # ===== ESTADO FINANCIERO =====
     cursor.execute("""
@@ -1000,8 +997,7 @@ def recibo_pago(pago_id):
         return redirect(url_for("login"))
 
     conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     cursor.execute("""
         SELECT p.*, 
@@ -1102,8 +1098,7 @@ def recibo_pago(pago_id):
 def pagos_reservacion(reservacion_id):
 
     conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     cursor.execute("""
         SELECT
@@ -1139,8 +1134,7 @@ from io import BytesIO
 @app.route("/voucher/<int:reservacion_id>")
 def generar_voucher(reservacion_id):
     conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # Obtener datos de la reservación principal
     cursor.execute("""
@@ -1213,8 +1207,7 @@ def reporte_contabilidad_general():
     reservacion_buscar = request.args.get("reservacion", "").strip()
 
     conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # ================= FILTROS =================
     where = []
@@ -1385,15 +1378,14 @@ def reporte_corte_fechas():
     orden = request.form.get('orden', 'fecha')  # por defecto orden por fecha
 
     conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     query_base = """
         SELECT 
             p.*, 
             r.cliente_id AS cliente_id, 
             r.tipo_reservacion AS tipo_reservacion, 
-            c.nombre || ' ' || IFNULL(c.apellidos, '') AS nombre_cliente
+            c.nombre || ' ' || COALESCE(c.apellidos, '') AS nombre_cliente
         FROM pagos p
         LEFT JOIN reservaciones r ON r.id = p.reservacion_id
         LEFT JOIN clientes c ON c.id = r.cliente_id
@@ -1431,8 +1423,7 @@ def reporte_corte_fechas():
 def verificar_voucher(reservacion_id):
 
     conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     cursor.execute("""
         SELECT r.id,
@@ -1794,8 +1785,7 @@ def vista_clientes():
     nombre = request.form.get('nombre')
 
     conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # Base del query
     query = """
