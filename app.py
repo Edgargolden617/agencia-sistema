@@ -151,7 +151,7 @@ def get_db():
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
     if DATABASE_URL:
-        conn = psycopg2.connect(DATABASE_URL)
+        conn = psycopg2.connect(DATABASE_URL, sslmode="require")
         return conn
 
     else:
