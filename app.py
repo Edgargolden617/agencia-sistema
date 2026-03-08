@@ -155,7 +155,7 @@ def get_db():
         conn = psycopg2.connect(
             DATABASE_URL,
             sslmode="require",
-            connect_timeout=10
+            cursor_factory=psycopg2.extras.RealDictCursor
         )
 
         conn.autocommit = True
