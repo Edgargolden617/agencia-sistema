@@ -262,6 +262,7 @@ def nueva_reservacion():
                     costo_cliente, costo_proveedor, utilidad,
                     estatus, fecha_creacion, producto_reservado
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING id
             """, (
                 cliente_id, tipo_reservacion, proveedor,
                 costo_cliente, costo_proveedor, utilidad,
