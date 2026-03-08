@@ -150,15 +150,7 @@ def get_db():
         if DATABASE_URL.startswith("postgres://"):
             DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-        conn = psycopg2.connect(
-            DATABASE_URL,
-            sslmode="require",
-            keepalives=1,
-            keepalives_idle=30,
-            keepalives_interval=10,
-            keepalives_count=5
-        )
-
+        conn = psycopg2.connect(DATABASE_URL)
         conn.autocommit = True
         return conn
 
