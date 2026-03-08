@@ -144,29 +144,28 @@ import psycopg2.extras
 import sqlite3
 
 def get_db():
-
     DATABASE_URL = os.environ.get("DATABASE_URL")
 
     if DATABASE_URL:
-
         if DATABASE_URL.startswith("postgres://"):
             DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
         conn = psycopg2.connect(
             DATABASE_URL,
             sslmode="require",
-            connect_timeout=5
+            keepalives=1,
+            keepalives_idle=30,
+            keepalives_interval=10,
+            keepalives_count=5
         )
 
         conn.autocommit = True
         return conn
 
     else:
-
         conn = sqlite3.connect("agencia.db")
         conn.row_factory = sqlite3.Row
         return conn
-
 # =========================
 # LOGIN
 # =========================
