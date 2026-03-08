@@ -445,7 +445,7 @@ def gestionar_reservas():
         SELECT
             r.id AS id_reserva,
             c.id AS id_cliente,
-            c.nombre || ' ' || c.apellidos AS cliente,
+            CONCAT(c.nombre,' ',c.apellidos) AS cliente,
             r.tipo_reservacion,
             r.producto_reservado,
             r.proveedor,
