@@ -228,10 +228,12 @@ def nueva_reservacion():
                 cliente_id = cliente["id"]
             else:
                 cursor.execute("""
-                    INSERT INTO clientes (nombre, apellidos, celular, email, referencia)
-                    VALUES (%s, %s, %s, %s, %s)
-                """, (nombre, apellidos, celular, email, referencia))
-                cliente_id = cursor.lastrowid
+            INSERT INTO clientes (nombre, apellidos, celular, email, referencia)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING id
+            """, (nombre, apellidos, celular, email, referencia))
+
+            cliente_id = cursor.fetchone()["id"]
 
             # ================= DATOS RESERVACIÓN =================
             tipo_reservacion = request.form.get("tipo_reservacion")
@@ -261,7 +263,7 @@ def nueva_reservacion():
                 estatus, fecha_creacion, producto_reservado
             ))
 
-            reservacion_id = cursor.lastrowid
+            reservacion_id = cursor.fetchone()["id"]
 
             # ================= DATOS HOTEL =================
             if tipo_reservacion == "hotel":
@@ -1793,7 +1795,7 @@ def vista_clientes():
     # Base del query
     query = """
         SELECT 
-            c.id AS cliente_id,BEGIN c.nombre, c.apellidos, c.email, c.celular, c.referencia,
+            c.id AS cliente_id, c.nombre, c.apellidos, c.email, c.celular, c.referencia,
             r.id AS reservacion_id, r.tipo_reservacion AS tipo_reservacion, r.producto_reservado,
             r.proveedor, r.fecha_creacion, r.costo_cliente
         FROM clientes c
