@@ -151,11 +151,16 @@ def get_db():
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
     if DATABASE_URL:
-        conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+        conn = psycopg2.connect(
+            DATABASE_URL,
+            sslmode="require",
+            cursor_factory=psycopg2.extras.RealDictCursor
+        )
         return conn
 
     else:
         conn = sqlite3.connect("agencia.db")
+        conn.row_factory = sqlite3.Row
         return conn
 
 # =========================
@@ -451,10 +456,10 @@ def gestionar_reservas():
             r.estatus,
             r.saldo_a_favor AS saldo_a_favor,
             r.devolucion_cliente,
-            COALENCE(f.pagado_cliente, 0) AS pagado_cliente,
-            COALENCE(f.pagado_proveedor, 0) AS pagado_proveedor,
-            COALENCE(f.saldo_cliente, 0) AS saldo_cliente,
-            COALENCE(f.saldo_proveedor, 0) AS saldo_proveedor,       
+            COALESCE(f.pagado_cliente, 0) AS pagado_cliente,
+            COALESCE(f.pagado_proveedor, 0) AS pagado_proveedor,
+            COALESCE(f.saldo_cliente, 0) AS saldo_cliente,
+            COALESCE(f.saldo_proveedor, 0) AS saldo_proveedor,       
 
             -- CAMPOS DE AVION
             a.aerolinea,
@@ -1788,7 +1793,7 @@ def vista_clientes():
     # Base del query
     query = """
         SELECT 
-            c.id AS cliente_id, c.nombre, c.apellidos, c.email, c.celular, c.referencia,
+            c.id AS cliente_id,BEGIN c.nombre, c.apellidos, c.email, c.celular, c.referencia,
             r.id AS reservacion_id, r.tipo_reservacion AS tipo_reservacion, r.producto_reservado,
             r.proveedor, r.fecha_creacion, r.costo_cliente
         FROM clientes c
