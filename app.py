@@ -143,6 +143,7 @@ def fecha_corta(valor):
 import os
 import psycopg2
 import psycopg2.extras
+import sqlite3
 
 def get_db():
 
