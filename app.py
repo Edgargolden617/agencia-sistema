@@ -1,4 +1,4 @@
-
+print("DATABASE_URL:", os.environ.get("DATABASE_URL"))
 print("VERSION NUEVA BD")
 #============= imports =========
 from flask import Flask, render_template, request, redirect, url_for, session
@@ -140,9 +140,20 @@ def fecha_corta(valor):
 # CONEXIÓN BD (POSTGRES + SQLITE)
 # =========================
 
+import os
+import psycopg2
+import psycopg2.extras
+
 def get_db():
-    conn = sqlite3.connect("agencia.db")
-    conn.row_factory = sqlite3.Row
+
+    DATABASE_URL = os.environ.get("DATABASE_URL")
+
+    conn = psycopg2.connect(
+        DATABASE_URL,
+        sslmode="require",
+        cursor_factory=psycopg2.extras.RealDictCursor
+    )
+
     return conn
 # =========================
 # LOGIN
@@ -429,7 +440,7 @@ def gestionar_reservas():
         SELECT
             r.id AS id_reserva,
             c.id AS id_cliente,
-            CONCAT(c.nombre,' ',c.apellidos) AS cliente,
+            SELECT c.nombre || ' ' || c.apellidos as cliente,
             r.tipo_reservacion,
             r.producto_reservado,
             r.proveedor,
