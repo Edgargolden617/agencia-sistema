@@ -140,48 +140,10 @@ def fecha_corta(valor):
 # CONEXIÓN BD (POSTGRES + SQLITE)
 # =========================
 
-import os
-import psycopg2
-import psycopg2.extras
-import sqlite3
-import time
-
-
 def get_db():
-
-    DATABASE_URL = os.environ.get("DATABASE_URL")
-
-    if DATABASE_URL:
-
-        if DATABASE_URL.startswith("postgres://"):
-            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-
-        intentos = 5
-
-        for i in range(intentos):
-            try:
-                conn = psycopg2.connect(
-                    DATABASE_URL,
-                    sslmode="require",
-                    cursor_factory=psycopg2.extras.RealDictCursor
-                )
-                return conn
-
-            except psycopg2.OperationalError as e:
-                print("Intento de conexión fallido:", i + 1)
-                time.sleep(2)
-
-        raise Exception("No se pudo conectar a la base de datos")
-
-    else:
-
-        conn = sqlite3.connect("agencia.db")
-        conn.row_factory = sqlite3.Row
-        return conn
-
-
-def close_db(conn):
-    conn.close()
+    conn = sqlite3.connect("agencia.db")
+    conn.row_factory = sqlite3.Row
+    return conn
 # =========================
 # LOGIN
 # =========================
