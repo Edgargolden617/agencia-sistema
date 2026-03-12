@@ -1,7 +1,3 @@
-import os
-print("DATABASE_URL:", os.environ.get("DATABASE_URL"))
-print("VERSION NUEVA BD")
-
 
 #============= imports =========
 from flask import Flask, render_template, request, redirect, url_for, session
