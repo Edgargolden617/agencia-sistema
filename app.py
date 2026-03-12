@@ -147,13 +147,24 @@ def get_db():
 
     DATABASE_URL = os.environ.get("DATABASE_URL")
 
-    conn = psycopg2.connect(
-        DATABASE_URL,
-        sslmode="require",
-        cursor_factory=psycopg2.extras.RealDictCursor
-    )
+    if DATABASE_URL:
+        import psycopg2
+        import psycopg2.extras
 
-    return conn
+        conn = psycopg2.connect(
+            DATABASE_URL,
+            cursor_factory=psycopg2.extras.RealDictCursor
+        )
+
+        return conn
+
+    else:
+        import sqlite3
+
+        conn = sqlite3.connect("agencia.db")
+        conn.row_factory = sqlite3.Row
+
+        return conn
 # =========================
 # LOGIN
 # =========================
