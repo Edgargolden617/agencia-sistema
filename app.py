@@ -422,9 +422,9 @@ def gestionar_reservas():
         where.append("c.id = %s")
         params.append(int(id_cliente))
 
-    if nombre:
-        where.append("(c.nombre LIKE %s OR c.apellidos LIKE %s)")
-        params.extend([f"%{nombre}%", f"%{nombre}%"])
+    if nombre and nombre.strip():
+        where.append("(c.nombre ILIKE %s OR c.apellidos ILIKE %s)")
+        params.extend([f"%{nombre.strip()}%", f"%{nombre.strip()}%"])
 
     if fecha:
         where.append("DATE(r.fecha_creacion) = %s")
@@ -1225,12 +1225,12 @@ def reporte_contabilidad_general():
 
         for palabra in palabras:
 
-            where.append("(c.nombre LIKE %s OR c.apellidos LIKE %s)")
+            where.append("(c.nombre ILIKE %s OR c.apellidos ILIKE %s)")
             params.extend([f"%{palabra}%", f"%{palabra}%"])
 
     # ---- FILTRO PROVEEDOR ----
     if proveedor_buscar:
-        where.append("r.proveedor LIKE %s")
+        where.append("r.proveedor ILIKE %s")
         params.append(f"%{proveedor_buscar}%")
 
     # ---- FILTRO RESERVACIÓN (GT123 o 123) ✅ ----
@@ -1393,11 +1393,11 @@ def reporte_corte_fechas():
 
     if fecha_inicio and fecha_fin:
         query = query_base + " WHERE date(p.fecha) BETWEEN %s AND %s ORDER BY p.fecha ASC"
-        pagos = cursor.execute(query, (fecha_inicio, fecha_fin))
+        cursor.execute(query, (fecha_inicio, fecha_fin))
         pagos = cursor.fetchall()
     else:
         query = query_base + " ORDER BY p.fecha DESC"
-        pagos = cursor.execute(query)
+        cursor.execute(query)
         pagos = cursor.fetchall()
 
     # Orden alternativo tipo cuenta T si se selecciona
@@ -1494,13 +1494,13 @@ def reporte_movimiento():
         filtros.append("fecha <= %s")
         params.append(fecha_fin)
     if recibo:
-        filtros.append("recibo LIKE %s")
+        filtros.append("recibo ILIKE %s")
         params.append(f"%{recibo}%")
     if tipo_pago:
         filtros.append("tipo_pago = %s")
         params.append(tipo_pago)
     if forma_pago:
-        filtros.append("forma_pago LIKE %s")
+        filtros.append("forma_pago ILIKE %s")
         params.append(f"%{forma_pago}%")
 
     if filtros:
