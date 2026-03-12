@@ -1,9 +1,12 @@
+import os
 print("DATABASE_URL:", os.environ.get("DATABASE_URL"))
 print("VERSION NUEVA BD")
+
+
 #============= imports =========
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-import sqlite3
+
 from datetime import datetime, date
 import locale
 try:
@@ -143,7 +146,7 @@ def fecha_corta(valor):
 import os
 import psycopg2
 import psycopg2.extras
-import sqlite3
+
 
 def get_db():
 
@@ -1127,7 +1130,7 @@ def pagos_reservacion(reservacion_id):
 
 # ==================== voucher =========
 from flask import Flask, render_template, send_file, current_app
-import sqlite3
+
 import os
 from xhtml2pdf import pisa
 from io import BytesIO
@@ -1365,10 +1368,10 @@ def reporte_contabilidad_general():
         fecha_fin=fecha_fin
     )
 
-import sqlite3
+
 from flask import request, render_template
 
-import sqlite3
+
 from flask import request, render_template
 
 @app.route('/reporte_corte_fechas', methods=['GET', 'POST'])
@@ -1393,10 +1396,12 @@ def reporte_corte_fechas():
 
     if fecha_inicio and fecha_fin:
         query = query_base + " WHERE date(p.fecha) BETWEEN %s AND %s ORDER BY p.fecha ASC"
-        pagos = cursor.execute(query, (fecha_inicio, fecha_fin)).fetchall()
+        pagos = cursor.execute(query, (fecha_inicio, fecha_fin))
+        pagos = cursor.fetchall()
     else:
         query = query_base + " ORDER BY p.fecha DESC"
-        pagos = cursor.execute(query).fetchall()
+        pagos = cursor.execute(query)
+        pagos = cursor.fetchall()
 
     # Orden alternativo tipo cuenta T si se selecciona
     if orden == 'tipo_pago':
@@ -1462,13 +1467,19 @@ def reporte_movimiento():
         return redirect(url_for("login"))
 
     conn = get_db()
+    cursor = conn.cursor()
+
     query = """
     SELECT 
         pagos.*, 
+        c.nombre || ' ' || c.apellidos AS cliente,
         reservaciones.cliente, 
         reservaciones.tipo_reservacion
     FROM pagos
-    LEFT JOIN reservaciones ON pagos.reservacion_id = reservaciones.id
+    LEFT JOIN reservaciones
+        ON pagos.reservacion_id = reservaciones.id
+    LEFT JOIN clientes c
+        ON reservaciones.cliente_id = c.id
 """
     filtros = []
     params = []
@@ -1500,7 +1511,8 @@ def reporte_movimiento():
 
     query += " ORDER BY fecha DESC"
 
-    pagos = conn.execute(query, params).fetchall()
+    cursor.execute(query, params)
+    pagos = cursor.fetchall()
     conn.close()
 
     return render_template("reporte_movimiento.html", pagos=pagos)
@@ -1510,7 +1522,7 @@ from datetime import datetime
 
 from flask import request, redirect, url_for, flash
 from datetime import datetime
-import sqlite3
+
 
 @app.route("/cancelar_reservacion/<int:reservacion_id>", methods=["POST"])
 def cancelar_reservacion(reservacion_id):
