@@ -138,33 +138,24 @@ def fecha_corta(valor):
 # CONEXIÓN BD (POSTGRES + SQLITE)
 # =========================
 
-import os
-import psycopg2
-import psycopg2.extras
-
-
 def get_db():
+
+    import os
+    import psycopg2
+    import psycopg2.extras
 
     DATABASE_URL = os.environ.get("DATpostgresql://agencia_db_eqri_user:WAdK9a3xBhgdS8bSbgOd4HmvbJ62auw4@dpg-d6l6j6ma2pns73br875g-a.oregon-postgres.render.com/agencia_db_eqri")
 
-    if DATABASE_URL:
-        import psycopg2
-        import psycopg2.extras
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-        conn = psycopg2.connect(
-            DATABASE_URL,
-            cursor_factory=psycopg2.extras.RealDictCursor
-        )
+    conn = psycopg2.connect(
+        DATABASE_URL,
+        sslmode="require",
+        cursor_factory=psycopg2.extras.RealDictCursor
+    )
 
-        return conn
-
-    else:
-        import sqlite3
-
-        conn = sqlite3.connect("agencia.db")
-        conn.row_factory = sqlite3.Row
-
-        return conn
+    return conn
 # =========================
 # LOGIN
 # =========================
