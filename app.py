@@ -441,7 +441,7 @@ def gestionar_reservas():
         SELECT
             r.id AS id_reserva,
             c.id AS id_cliente,
-            SELECT c.nombre || ' ' || c.apellidos as cliente,
+            c.nombre || ' ' || c.apellidos as cliente,
             r.tipo_reservacion,
             r.producto_reservado,
             r.proveedor,
