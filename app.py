@@ -1825,11 +1825,6 @@ def vista_clientes():
 
     return render_template("clientes.html", clientes=clientes, cliente_id=cliente_id, nombre=nombre)
 
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
 @app.route("/init_db")
 def init_db():
     conn = get_db()
@@ -1874,3 +1869,7 @@ def init_db():
     conn.close()
 
     return "✅ TABLAS CREADAS"
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
