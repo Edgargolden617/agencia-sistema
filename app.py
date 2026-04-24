@@ -144,18 +144,17 @@ def get_db():
     import psycopg2.extras
 
     DATABASE_URL = os.environ.get("DATABASE_URL")
-    print("DATABASE_URL:", DATABASE_URL)
 
     if not DATABASE_URL:
-        raise Exception("No hay DATABASE_URL en Render")
+        raise Exception("❌ No hay DATABASE_URL en Render")
 
+    # 🔥 CORRECCIÓN IMPORTANTE
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
     conn = psycopg2.connect(
         DATABASE_URL,
-        sslmode="require",
-        cursor_factory=psycopg2.extras.RealDictCursor
+        sslmode="require"
     )
 
     return conn
