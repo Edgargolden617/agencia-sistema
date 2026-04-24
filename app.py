@@ -144,9 +144,10 @@ def get_db():
     import psycopg2.extras
 
     DATABASE_URL = os.environ.get("DATABASE_URL")
+    print("DATABASE_URL:", DATABASE_URL)
 
     if not DATABASE_URL:
-        raise Exception("DATABASE_URL no está configurada")
+        raise Exception("No hay DATABASE_URL en Render")
 
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
