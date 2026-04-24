@@ -144,7 +144,7 @@ def get_db():
     import psycopg2
     import psycopg2.extras
 
-    DATABASE_URL = os.environ.get("DATpostgresql://agencia_db_eqri_user:WAdK9a3xBhgdS8bSbgOd4HmvbJ62auw4@dpg-d6l6j6ma2pns73br875g-a.oregon-postgres.render.com/agencia_db_eqri")
+    DATABASE_URL = os.environ.get("DATABASE_URL")
 
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
