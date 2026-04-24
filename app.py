@@ -1830,3 +1830,47 @@ def vista_clientes():
 if __name__ == "__main__":
     app.run(debug=True)
 
+@app.route("/init_db")
+def init_db():
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS clientes (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT,
+        apellidos TEXT,
+        telefono TEXT,
+        email TEXT,
+        referencia TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS proveedores (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT,
+        telefono TEXT,
+        email TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS reservaciones (
+        id SERIAL PRIMARY KEY,
+        cliente_id INTEGER,
+        tipo_reservacion TEXT,
+        proveedor TEXT,
+        fecha_creacion TIMESTAMP,
+        costo_cliente REAL,
+        costo_proveedor REAL,
+        utilidad REAL,
+        estatus TEXT,
+        producto_reservado TEXT,
+        saldo_a_favor REAL,
+        devolucion_cliente REAL,
+        penalidad_proveedor REAL,
+        penalidad_agencia REAL
+    );
+    """)
+
+    conn.commit()
+    conn.close()
+
+    return "✅ TABLAS CREADAS"
