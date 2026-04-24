@@ -449,10 +449,10 @@ def gestionar_reservas():
             r.estatus,
             r.saldo_a_favor AS saldo_a_favor,
             r.devolucion_cliente,
-            COALESCE(f.pagado_cliente, 0) AS pagado_cliente,
-            COALESCE(f.pagado_proveedor, 0) AS pagado_proveedor,
-            COALESCE(f.saldo_cliente, 0) AS saldo_cliente,
-            COALESCE(f.saldo_proveedor, 0) AS saldo_proveedor,       
+            0 AS pagado_cliente,
+            0 AS pagado_proveedor,
+            0 AS saldo_cliente,
+            0 AS saldo_proveedor,       
 
             -- CAMPOS DE AVION
             a.aerolinea,
@@ -482,8 +482,8 @@ def gestionar_reservas():
         JOIN clientes c ON r.cliente_id = c.id
         LEFT JOIN reservacion_hotel h ON r.id = h.reservacion_id
         LEFT JOIN reservacion_avion a ON r.id = a.reservacion_id                     
-        LEFT JOIN vista_estado_financiero_reserva f
-           ON f.reservacion_id = r.id
+    --  LEFT JOIN vista_estado_financiero_reserva f
+    --  ON f.reservacion_id = r.id
         {where_sql}
         ORDER BY r.fecha_creacion {orden_sql}
     """, params)
