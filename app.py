@@ -198,7 +198,8 @@ def nueva_reservacion():
             
 
             conn = get_db()
-            cursor = conn.cursor()
+            import psycopg2.extras
+            cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
             # ================= DATOS CLIENTE =================
             nombre = request.form.get("nombre")
@@ -396,7 +397,8 @@ def gestionar_reservas():
         return redirect(url_for("login"))
 
     conn = get_db()
-    cursor = conn.cursor()
+    import psycopg2.extras
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # ================= FILTROS =================
     id_reserva = request.args.get("id_reserva")
