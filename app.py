@@ -482,8 +482,7 @@ def gestionar_reservas():
         JOIN clientes c ON r.cliente_id = c.id
         LEFT JOIN reservacion_hotel h ON r.id = h.reservacion_id
         LEFT JOIN reservacion_avion a ON r.id = a.reservacion_id                     
-    --  LEFT JOIN vista_estado_financiero_reserva f
-    --  ON f.reservacion_id = r.id
+
         {where_sql}
         ORDER BY r.fecha_creacion {orden_sql}
     """, params)
