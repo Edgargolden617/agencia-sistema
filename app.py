@@ -458,7 +458,7 @@ def gestionar_reservas():
             COALESCE(0, 0) AS pagado_cliente,
             COALESCE(0, 0) AS pagado_proveedor,
             COALESCE(0, 0) AS saldo_cliente,
-            COALESCE(0, 0) AS saldo_proveedor,       
+            COALESCE(0, 0) AS saldo_proveedor      
 
             -- CAMPOS DE AVION
             a.aerolinea,
