@@ -1867,6 +1867,40 @@ def init_db():
 
     return "✅ TABLAS CREADAS"
 
+@app.route("/crear_vista")
+def crear_vista():
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        CREATE OR REPLACE VIEW vista_estado_financiero_reserva AS
+        SELECT 
+            r.id AS reservacion_id,
+
+            COALESCE(SUM(CASE WHEN p.tipo = 'cliente' THEN p.monto ELSE 0 END), 0) AS pagado_cliente,
+
+            COALESCE(SUM(CASE WHEN p.tipo = 'proveedor' THEN p.monto ELSE 0 END), 0) AS pagado_proveedor,
+
+            COALESCE(r.costo_cliente, 0) - 
+            COALESCE(SUM(CASE WHEN p.tipo = 'cliente' THEN p.monto ELSE 0 END), 0) AS saldo_cliente,
+
+            COALESCE(r.costo_proveedor, 0) - 
+            COALESCE(SUM(CASE WHEN p.tipo = 'proveedor' THEN p.monto ELSE 0 END), 0) AS saldo_proveedor
+
+        FROM reservaciones r
+        LEFT JOIN pagos p ON p.reservacion_id = r.id
+        GROUP BY r.id;
+        """)
+
+        conn.commit()
+        conn.close()
+
+        return "✅ Vista creada correctamente"
+
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+
 if __name__ == "__main__":
     app.run(debug=True)
 
