@@ -454,11 +454,11 @@ def gestionar_reservas():
             r.costo_proveedor AS costo_agencia,
             r.estatus,
             r.saldo_a_favor AS saldo_a_favor,
-            0 AS r.devolucion_cliente,
+            0 AS devolucion_cliente,
             COALESCE(0, 0) AS pagado_cliente,
             COALESCE(0, 0) AS pagado_proveedor,
             COALESCE(0, 0) AS saldo_cliente,
-            COALESCE(0, 0) AS saldo_proveedor      
+            COALESCE(0, 0) AS saldo_proveedor,      
 
             -- CAMPOS DE AVION
             a.aerolinea,
