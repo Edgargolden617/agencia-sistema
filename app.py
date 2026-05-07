@@ -1824,10 +1824,11 @@ def vista_clientes():
 
 @app.route("/init_db")
 def init_db():
+
     conn = get_db()
     cur = conn.cursor()
 
-    # ===== CLIENTES =====
+    # ================= CLIENTES =================
     cur.execute("""
     CREATE TABLE IF NOT EXISTS clientes (
         id SERIAL PRIMARY KEY,
@@ -1839,45 +1840,125 @@ def init_db():
     );
     """)
 
-    # ===== PAGOS =====
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS pagos (
-    id SERIAL PRIMARY KEY,
-    reservacion_id INTEGER,
-    tipo_pago TEXT,
-    forma_pago TEXT,
-    monto REAL,
-    concepto TEXT,
-    observacion TEXT,
-    fecha TIMESTAMP,
-    recibo_id INTEGER
-);
-""")
-
-    # ===== RESERVACIONES =====
+    # ================= RESERVACIONES =================
     cur.execute("""
     CREATE TABLE IF NOT EXISTS reservaciones (
         id SERIAL PRIMARY KEY,
         cliente_id INTEGER,
         tipo_reservacion TEXT,
         proveedor TEXT,
-        costo_cliente REAL,
-        costo_proveedor REAL,
-        utilidad REAL,
+        costo_cliente REAL DEFAULT 0,
+        costo_proveedor REAL DEFAULT 0,
+        utilidad REAL DEFAULT 0,
         estatus TEXT,
         fecha_creacion TIMESTAMP,
         producto_reservado TEXT,
-        saldo_a_favor REAL,
-        devolucion_cliente REAL,
-        penalidad_proveedor REAL,
-        penalidad_agencia REAL
+
+        saldo_a_favor REAL DEFAULT 0,
+        devolucion_cliente REAL DEFAULT 0,
+        penalidad_proveedor REAL DEFAULT 0,
+        penalidad_agencia REAL DEFAULT 0
+    );
+    """)
+
+    # ================= HOTEL =================
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS reservacion_hotel (
+        id SERIAL PRIMARY KEY,
+        reservacion_id INTEGER,
+        hotel TEXT,
+        ciudad TEXT,
+        fecha_entrada TEXT,
+        fecha_salida TEXT,
+        plan TEXT,
+        tiempo_limite TEXT,
+        observaciones TEXT,
+        clave_proveedor TEXT,
+        clave_hotel TEXT
+    );
+    """)
+
+    # ================= HABITACIONES =================
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS habitaciones (
+        id SERIAL PRIMARY KEY,
+        reservacion_id INTEGER,
+        habitacion_num INTEGER,
+        adultos INTEGER,
+        menores INTEGER,
+        edades TEXT
+    );
+    """)
+
+    # ================= AVIÓN =================
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS reservacion_avion (
+        id SERIAL PRIMARY KEY,
+        reservacion_id INTEGER,
+
+        aerolinea TEXT,
+        vuelo TEXT,
+        tipo_vuelo TEXT,
+
+        fecha_salida TEXT,
+        hora_salida TEXT,
+        hora_llegada TEXT,
+
+        fecha_regreso TEXT,
+        hora_regreso TEXT,
+        hora_llegada_regreso TEXT,
+
+        origen TEXT,
+        destino TEXT,
+
+        tiene_escala BOOLEAN,
+        ciudad_escala TEXT,
+        hora_salida_escala TEXT,
+        destino_escala TEXT,
+        hora_llegada_escala TEXT,
+
+        tiempo_limite TEXT,
+        clave_proveedor TEXT,
+        clave_aerolinea TEXT,
+        observaciones TEXT
+    );
+    """)
+
+    # ================= PASAJEROS =================
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS pasajeros_avion (
+        id SERIAL PRIMARY KEY,
+        reservacion_id INTEGER,
+        nombre TEXT,
+        apellidos TEXT,
+        fecha_nacimiento TEXT
+    );
+    """)
+
+    # ================= PAGOS =================
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS pagos (
+        id SERIAL PRIMARY KEY,
+        reservacion_id INTEGER,
+
+        tipo_pago TEXT,
+        forma_pago TEXT,
+        monto REAL DEFAULT 0,
+
+        concepto TEXT,
+        observacion TEXT,
+
+        fecha TIMESTAMP,
+        fecha_limite TEXT,
+
+        recibo_id INTEGER
     );
     """)
 
     conn.commit()
     conn.close()
 
-    return "✅ TABLAS CREADAS"
+    return "✅ TODAS LAS TABLAS FUERON CREADAS"
 
 @app.route("/crear_vista")
 def crear_vista():
