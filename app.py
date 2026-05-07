@@ -135,19 +135,16 @@ def fecha_corta(valor):
     return valor
 
 
-# CONEXIÓN BD (POSTGRES + SQLITE)
+# =========================
+# CONEXIÓN POSTGRES RENDER
 # =========================
 
 def get_db():
 
-    import os
     import psycopg2
     import psycopg2.extras
 
-    DATABASE_URL = os.environ.get("postgresql://agencia_user:6UNcQOpfjycpFdcn2OGTT6N3bTTyFusy@dpg-d7lhedpo3t8c73f5phog-a.oregon-postgres.render.com/agencia_aixp")
-
-    if DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL = "postgresql://agencia_user:6UNcQOpfjycpFdcn2OGTT6N3bTTyFusy@dpg-d7lhedpo3t8c73f5phog-a.oregon-postgres.render.com/agencia_aixp"
 
     conn = psycopg2.connect(
         DATABASE_URL,
@@ -455,10 +452,10 @@ def gestionar_reservas():
             r.estatus,
             r.saldo_a_favor AS saldo_a_favor,
             0 AS devolucion_cliente,
-            COALESCE(0, 0) AS pagado_cliente,
-            COALESCE(0, 0) AS pagado_proveedor,
-            COALESCE(0, 0) AS saldo_cliente,
-            COALESCE(0, 0) AS saldo_proveedor,      
+            COALESCE(f.pagado_cliente, 0) AS pagado_cliente,
+            COALESCE(f.pagado_proveedor, 0) AS pagado_proveedor,
+            COALESCE(f.saldo_cliente, 0) AS saldo_cliente,
+            COALESCE(f.saldo_proveedor, 0) AS saldo_proveedor,      
 
             -- CAMPOS DE AVION
             a.aerolinea,
@@ -488,8 +485,8 @@ def gestionar_reservas():
         JOIN clientes c ON r.cliente_id = c.id
         LEFT JOIN reservacion_hotel h ON r.id = h.reservacion_id
         LEFT JOIN reservacion_avion a ON r.id = a.reservacion_id                     
-    --  LEFT JOIN vista_estado_financiero_reserva f
-    --  ON f.reservacion_id = r.id
+        LEFT JOIN vista_estado_financiero_reserva f
+        ON f.reservacion_id = r.id
         {where_sql}
         ORDER BY r.fecha_creacion {orden_sql}
     """, params)
@@ -1842,6 +1839,21 @@ def init_db():
     );
     """)
 
+    # ===== PAGOS =====
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS pagos (
+    id SERIAL PRIMARY KEY,
+    reservacion_id INTEGER,
+    tipo_pago TEXT,
+    forma_pago TEXT,
+    monto REAL,
+    concepto TEXT,
+    observacion TEXT,
+    fecha TIMESTAMP,
+    recibo_id INTEGER
+);
+""")
+
     # ===== RESERVACIONES =====
     cur.execute("""
     CREATE TABLE IF NOT EXISTS reservaciones (
@@ -1878,19 +1890,48 @@ def crear_vista():
         SELECT 
             r.id AS reservacion_id,
 
-            COALESCE(SUM(CASE WHEN p.tipo = 'cliente' THEN p.monto ELSE 0 END), 0) AS pagado_cliente,
+            COALESCE(SUM(
+                CASE 
+                    WHEN p.tipo_pago = 'cliente_agencia' 
+                    THEN p.monto 
+                    ELSE 0 
+                END
+            ), 0) AS pagado_cliente,
 
-            COALESCE(SUM(CASE WHEN p.tipo = 'proveedor' THEN p.monto ELSE 0 END), 0) AS pagado_proveedor,
+            COALESCE(SUM(
+                CASE 
+                    WHEN p.tipo_pago = 'agencia_proveedor' 
+                    THEN p.monto 
+                    ELSE 0 
+                END
+            ), 0) AS pagado_proveedor,
 
             COALESCE(r.costo_cliente, 0) - 
-            COALESCE(SUM(CASE WHEN p.tipo = 'cliente' THEN p.monto ELSE 0 END), 0) AS saldo_cliente,
+            COALESCE(SUM(
+                CASE 
+                    WHEN p.tipo_pago = 'cliente_agencia' 
+                    THEN p.monto 
+                    ELSE 0 
+                END
+            ), 0) AS saldo_cliente,
 
             COALESCE(r.costo_proveedor, 0) - 
-            COALESCE(SUM(CASE WHEN p.tipo = 'proveedor' THEN p.monto ELSE 0 END), 0) AS saldo_proveedor
+            COALESCE(SUM(
+                CASE 
+                    WHEN p.tipo_pago = 'agencia_proveedor' 
+                    THEN p.monto 
+                    ELSE 0 
+                END
+            ), 0) AS saldo_proveedor
 
         FROM reservaciones r
-        LEFT JOIN pagos p ON p.reservacion_id = r.id
-        GROUP BY r.id;
+        LEFT JOIN pagos p 
+            ON p.reservacion_id = r.id
+
+        GROUP BY 
+            r.id,
+            r.costo_cliente,
+            r.costo_proveedor;
         """)
 
         conn.commit()
